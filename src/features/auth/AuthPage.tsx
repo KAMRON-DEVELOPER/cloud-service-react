@@ -8,7 +8,7 @@ import { FcExpired, FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
 import { useState, type FormEvent } from 'react';
 
-export const ContinueWithEmailPage = () => {
+export const AuthPage = () => {
   const navigate = useNavigate();
   const [continueWithEmail, { isLoading }] = useContinueWithEmailMutation();
   const [email, setEmail] = useState('');

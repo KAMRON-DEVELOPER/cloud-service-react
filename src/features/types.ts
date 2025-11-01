@@ -147,9 +147,4 @@ export interface ListingResponse {
   total: number;
 }
 
-export type Country = {
-  name: string;
-  code: string;
-};
-
 export type GetListingsResponse = ApiResponseWithRedirect<ListingResponse>;

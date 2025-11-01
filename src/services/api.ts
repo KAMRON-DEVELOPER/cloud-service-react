@@ -2,12 +2,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { AppState } from '@/store/store';
 import { Mutex } from 'async-mutex';
 import { logout } from '@/features/auth/authSlice';
-import { API_URL } from '@/consts';
+import { USERS_SERVICE_URL } from '@/consts';
 
 const mutex = new Mutex();
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `${API_URL}`,
+  baseUrl: `${USERS_SERVICE_URL}`,
   prepareHeaders(headers, { getState }) {
     const token = (getState() as AppState).auth.tokens?.accessToken;
 

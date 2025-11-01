@@ -1,15 +1,12 @@
 import { createBrowserRouter, type RouteObject, RouterProvider } from 'react-router-dom';
 import RootLayout from '@/layouts/RootLayout';
 import ErrorPage from '@/components/ErrorPage';
-import { ContinueWithEmailPage } from '@/features/auth/ContinueWithEmailPage';
+import { AuthPage } from '@/features/auth/AuthPage';
 import ListingPage from '@/features/listings/ListingPage';
-import CompleteProfilePage from '@/features/auth/CompleteProfilePage';
-import PersistLogin from '@/layouts/PersistLogin';
+import PersistAuth from '@/layouts/PersistAuth';
 import NewListingPage from '@/features/listings/NewListingPage';
 import ProfilePage from '@/features/auth/ProfilePage';
 import ListingDetailPage from '@/features/listings/ListingDetailPage';
-// import { APIProvider } from '@vis.gl/react-google-maps';
-// import { GOOGLE_MAPS_API_KEY } from '@/consts';
 import ChatPage from '@/features/chat/ChatPage';
 import WishlistPage from '@/features/wishlist/WishlistPage';
 import SettingsPage from '@/features/settings/SettingsPage';
@@ -18,14 +15,10 @@ function App() {
   const routes: RouteObject[] = [
     {
       path: '/email',
-      element: <ContinueWithEmailPage />,
+      element: <AuthPage />,
     },
     {
-      path: '/complete-profile',
-      element: <CompleteProfilePage />,
-    },
-    {
-      element: <PersistLogin />,
+      element: <PersistAuth />,
       children: [
         {
           element: <RootLayout />,
@@ -46,11 +39,7 @@ function App() {
 
   const router = createBrowserRouter(routes);
 
-  return (
-    // <APIProvider apiKey={GOOGLE_MAPS_API_KEY}>
-    <RouterProvider router={router} />
-    // {/* </APIProvider> */}
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

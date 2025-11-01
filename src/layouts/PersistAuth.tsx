@@ -4,7 +4,7 @@ import { authApi, useRefreshTokenMutation } from '@/services/auth';
 import { selectIsAuthenticated } from '@/features/auth/authSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 
-const PersistLogin = () => {
+const PersistAuth = () => {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const [refreshToken] = useRefreshTokenMutation();
   const dispatch = useAppDispatch();
@@ -52,4 +52,4 @@ const PersistLogin = () => {
   return <Outlet />;
 };
 
-export default PersistLogin;
+export default PersistAuth;
