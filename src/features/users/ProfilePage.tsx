@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { selectUser } from '@/features/auth/authSlice';
+import { selectUser } from '@/features/users/authSlice';
 import { Button } from '@/components/ui/button';
 import { S3_URL } from '@/consts';
 

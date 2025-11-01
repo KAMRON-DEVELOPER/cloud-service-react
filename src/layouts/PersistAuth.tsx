@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { authApi, useRefreshTokenMutation } from '@/services/auth';
-import { selectIsAuthenticated } from '@/features/auth/authSlice';
+import { selectIsAuthenticated } from '@/features/users/authSlice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 
 const PersistAuth = () => {

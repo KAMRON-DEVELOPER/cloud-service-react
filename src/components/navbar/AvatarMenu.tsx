@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LogOut, Settings, User as UserIcon, Heart, MessageCircle } from 'lucide-react';
 
 import { useAppDispatch } from '@/store/store';
-import { logout } from '@/features/auth/authSlice';
+import { logout } from '@/features/users/authSlice';
 import { S3_URL } from '@/consts';
 
 import { Avatar, AvatarImage } from '@/components/ui/avatar';
@@ -31,8 +31,6 @@ export function AvatarMenu({ user }: { user: User | null }) {
       console.error('Failed to log out:', error);
     }
   };
-
-  const preventClose = (e: Event) => e.preventDefault();
 
   if (!user) return null;
 
@@ -63,21 +61,27 @@ export function AvatarMenu({ user }: { user: User | null }) {
           </DropdownMenuItem>
           {/* wishlist */}
           <DropdownMenuItem asChild>
-            <Link to='/wishlists' className='flex items-center'>
+            <Link
+              to='/wishlists'
+              className='flex items-center'>
               <Heart className='mr-2 h-4 w-4' />
               <span>Wishlists</span>
             </Link>
           </DropdownMenuItem>
           {/* chat */}
           <DropdownMenuItem asChild>
-            <Link to='/chats' className='flex items-center'>
+            <Link
+              to='/chats'
+              className='flex items-center'>
               <MessageCircle className='mr-2 h-4 w-4' />
               <span>Chats</span>
             </Link>
           </DropdownMenuItem>
           {/* settings */}
           <DropdownMenuItem asChild>
-            <Link to='/settings' className='flex items-center'>
+            <Link
+              to='/settings'
+              className='flex items-center'>
               <Settings className='mr-2 h-4 w-4' />
               <span>Settings</span>
             </Link>

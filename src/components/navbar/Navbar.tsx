@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { selectIsAuthenticated, selectUser } from '@/features/auth/authSlice';
+import { selectIsAuthenticated, selectUser } from '@/features/users/authSlice';
 import { Button } from '@/components/ui/button';
 import Notification from './Notification';
 import { AvatarMenu } from './AvatarMenu';
@@ -19,7 +19,6 @@ export default function Navbar() {
       </Link>
 
       <div className='flex items-center gap-2 sm:gap-3'>
-
         {isAuthenticated ? (
           <>
             <Button
@@ -37,7 +36,11 @@ export default function Navbar() {
             <AvatarMenu user={user} />
           </>
         ) : (
-          <Button asChild size='sm' variant='secondary' className='whitespace-nowrap'>
+          <Button
+            asChild
+            size='sm'
+            variant='secondary'
+            className='whitespace-nowrap'>
             <Link to='/email'>Get started</Link>
           </Button>
         )}

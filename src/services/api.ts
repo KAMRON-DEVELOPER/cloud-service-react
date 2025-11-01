@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { AppState } from '@/store/store';
 import { Mutex } from 'async-mutex';
-import { logout } from '@/features/auth/authSlice';
+import { logout } from '@/features/users/authSlice';
 import { USERS_SERVICE_URL } from '@/consts';
 
 const mutex = new Mutex();

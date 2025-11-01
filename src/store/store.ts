@@ -1,8 +1,8 @@
 import { type Action, configureStore, type ThunkAction } from '@reduxjs/toolkit';
-import auth from '@/features/auth/authSlice';
+import auth from '@/features/users/authSlice';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { api } from '@/services/api';
-import stats from '@/features/listings/statsSlice';
+import stats from '@/features/compute/statsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 export const store = configureStore({
