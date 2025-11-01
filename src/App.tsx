@@ -4,12 +4,12 @@ import ErrorPage from '@/components/ErrorPage';
 import { AuthPage } from '@/features/users/AuthPage';
 import DashboardPage from '@/features/compute/DashboardPage';
 import PersistAuth from '@/layouts/PersistAuth';
-import NewListingPage from '@/features/compute/NewListingPage';
 import ProfilePage from '@/features/users/ProfilePage';
-import ListingDetailPage from '@/features/compute/ListingDetailPage';
-import ChatPage from '@/features/billing/ChatPage';
+import ResourcePage from '@/features/compute/ResourcePage';
 import SettingsPage from '@/features/settings/SettingsPage';
 import HomePage from '@/features/users/HomePage';
+import ProjectsPage from '@/features/compute/ProjectsPage';
+import ProjectPage from '@/features/compute/ProjectPage';
 
 function App() {
   const routes: RouteObject[] = [
@@ -29,10 +29,10 @@ function App() {
           errorElement: <ErrorPage />,
           children: [
             { path: '/dashboard', element: <DashboardPage /> },
-            { path: '/listing/:id', element: <ListingDetailPage /> },
-            { path: '/listings/new', element: <NewListingPage /> },
+            { path: '/projects', element: <ProjectsPage /> },
+            { path: '/project/:id', element: <ProjectPage /> },
+            { path: '/resource/:id', element: <ResourcePage /> },
             { path: '/profile', element: <ProfilePage /> },
-            { path: '/chats', element: <ChatPage /> },
             { path: '/settings', element: <SettingsPage /> },
           ],
         },

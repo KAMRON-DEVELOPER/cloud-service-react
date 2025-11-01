@@ -10,7 +10,7 @@ const initialState: ListingState = {
 };
 
 export const listingsSlice = createSlice({
-  name: 'listings',
+  name: 'compute',
   initialState,
   reducers: {},
 });

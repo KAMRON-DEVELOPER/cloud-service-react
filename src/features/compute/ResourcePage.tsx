@@ -6,7 +6,7 @@ import { BedDouble, Bath, Expand, MapPin } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { S3_URL } from '@/consts';
 
-export default function ListingDetailPage() {
+export default function ResourcePage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
