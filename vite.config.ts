@@ -18,4 +18,9 @@ export default defineConfig({
       // '@': path.resolve(__dirname, './src'),
     },
   },
+  // server: {
+  //   proxy: {
+  //     '/api/v1': 'http://localhost:8000',
+  //   },
+  // },
 });
