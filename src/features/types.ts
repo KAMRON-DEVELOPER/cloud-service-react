@@ -1,18 +1,19 @@
 // ------------------------------------------------
-// --------------- USER-- -------------------------
+// --------------- USER ---------------------------
 // ------------------------------------------------
 export type UserRole = 'admin' | 'regular';
-export type UserStatus = 'active' | 'inactive';
+export type UserStatus = 'active' | 'suspended' | 'pending_verification';
 
 export interface User {
   id: string;
-  fullName: string;
+  username: string;
   email: string;
-  phoneNumber?: string | null;
-  password?: string | null;
+  password?: string;
   picture?: string | null;
+  emailVerified: boolean;
   role: UserRole;
   status: UserStatus;
+  oauthUserId?: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -33,9 +34,7 @@ export interface OAuthUser {
   id: string;
   provider: string;
   username?: string;
-  fullName?: string;
   email?: string;
-  phoneNumber?: string;
   password?: string;
   picture?: string;
   createdAt?: string;
@@ -69,82 +68,138 @@ export type CompleteProfileResponse = AuthResponse | ErrorResponse;
 export type RefreshTokenResponse = Tokens | ErrorResponse;
 
 // ------------------------------------------------
-// ------------- LISTINGS -------------------------
+// ------------- PROJECTS -------------------------
 // ------------------------------------------------
-export type ApartmentCondition = 'new' | 'repaired' | 'old';
-export type SaleType = 'buy' | 'rent';
-
-export interface Listing {
+export interface Project {
   id: string;
-  apartment: Apartment;
-  owner: User;
-  price: number;
-  currency: string;
-  tags?: string[];
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ApartmentPicture {
-  id: string;
-  apartment_id: string;
-  url: string;
-  is_primary: boolean;
-  created_at: string;
-  updated_at: string;
-}
-
-export interface Apartment {
-  id: string;
-  title: string;
-  rating?: number;
-  address: Address;
+  ownerId: string;
+  name: string;
   description?: string | null;
-  rooms: number;
-  beds: number;
-  baths: number;
-  pictures: ApartmentPicture[];
-  amenities: string[];
-  area: number;
-  floor: number;
-  hasElevator: boolean;
-  condition: ApartmentCondition;
-  saleType: SaleType;
-  requirements?: string | null;
-  hasGarden: boolean;
-  distanceToKindergarten?: number | null;
-  distanceToSchool?: number | null;
-  distanceToHospital?: number | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface Address {
-  id: string;
-  apartmentId: string;
-  streetAddress: string;
-  city: string;
-  stateOrRegion: string;
-  countyOrDistrict?: string | null;
-  postalCode: string;
-  country: string;
-  latitude?: number | null;
-  longitude?: number | null;
-  createdAt: string;
-  updatedAt: string;
+export interface CreateProjectRequest {
+  name: string;
+  description?: string;
 }
 
-export interface Favorite {
+export interface UpdateProjectRequest {
+  name?: string;
+  description?: string;
+}
+
+// ------------------------------------------------
+// ------------- DEPLOYMENTS ----------------------
+// ------------------------------------------------
+export type DeploymentStatus = 'pending' | 'running' | 'succeeded' | 'failed' | 'terminated';
+
+export interface ResourceSpec {
+  cpuRequestMillicores: number;
+  cpuLimitMillicores: number;
+  memoryRequestMb: number;
+  memoryLimitMb: number;
+}
+
+export interface Deployment {
   id: string;
   userId: string;
-  listingId: string;
+  projectId: string;
+  name: string;
+  image: string;
+  envVars: Record<string, string>;
+  replicas: number;
+  resources: ResourceSpec;
+  labels?: Record<string, string> | null;
+  status: DeploymentStatus;
+  clusterNamespace: string;
+  clusterDeploymentName: string;
+  nodeSelector?: Record<string, string> | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export interface ListingResponse {
-  listings: Listing[];
-  total: number;
+export interface CreateDeploymentRequest {
+  projectId: string;
+  name: string;
+  image: string;
+  envVars?: Record<string, string>;
+  replicas?: number;
+  resources?: Partial<ResourceSpec>;
+  labels?: Record<string, string>;
+  nodeSelector?: Record<string, string>;
 }
 
-export type GetListingsResponse = ApiResponseWithRedirect<ListingResponse>;
+export interface UpdateDeploymentRequest {
+  name?: string;
+  image?: string;
+  envVars?: Record<string, string>;
+  replicas?: number;
+  resources?: Partial<ResourceSpec>;
+  labels?: Record<string, string>;
+  status?: DeploymentStatus;
+}
+
+export interface DeploymentSecret {
+  id: string;
+  deploymentId: string;
+  key: string;
+  value: string;
+  createdAt: string;
+}
+
+export interface DeploymentEvent {
+  id: string;
+  deploymentId: string;
+  eventType: string;
+  message?: string | null;
+  createdAt: string;
+}
+
+// ------------------------------------------------
+// ------------- BILLING --------------------------
+// ------------------------------------------------
+export interface Balance {
+  id: string;
+  userId: string;
+  amount: number;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TransactionType = 'free_credit' | 'usage_charge' | 'fund';
+
+export interface Transaction {
+  id: string;
+  balanceId: string;
+  amount: number;
+  type: TransactionType;
+  detail?: string | null;
+  billingId?: string | null;
+  createdAt: string;
+}
+
+export interface Billing {
+  id: string;
+  userId: string;
+  deploymentId?: string | null;
+  resourcesSnapshot: ResourceSpec;
+  cpuMillicores: number;
+  memoryMb: number;
+  costPerHour: number;
+  hoursUsed: number;
+  totalCost: number;
+  createdAt: string;
+}
+
+// ------------------------------------------------
+// ------------- STATS ----------------------------
+// ------------------------------------------------
+export interface DashboardStats {
+  totalProjects: number;
+  totalDeployments: number;
+  activeDeployments: number;
+  totalCost: number;
+  balance: number;
+}

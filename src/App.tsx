@@ -1,5 +1,5 @@
 import { createBrowserRouter, type RouteObject, RouterProvider } from 'react-router-dom';
-import RootLayout from '@/layouts/RootLayout';
+import DashboardLayout from '@/layouts/DashboardLayout';
 import ErrorPage from '@/components/ErrorPage';
 import { AuthPage } from '@/features/users/AuthPage';
 import DashboardPage from '@/features/compute/DashboardPage';
@@ -18,14 +18,14 @@ function App() {
       element: <HomePage />,
     },
     {
-      path: '/email',
+      path: '/auth',
       element: <AuthPage />,
     },
     {
       element: <PersistAuth />,
       children: [
         {
-          element: <RootLayout />,
+          element: <DashboardLayout />,
           errorElement: <ErrorPage />,
           children: [
             { path: '/dashboard', element: <DashboardPage /> },

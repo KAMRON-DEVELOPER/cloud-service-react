@@ -4,9 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { FcExpired, FcGoogle } from 'react-icons/fc';
+import { FcGoogle } from 'react-icons/fc';
 import { useNavigate } from 'react-router-dom';
 import { useState, type FormEvent } from 'react';
+import { SiGithub, SiRefinedgithub } from '@icons-pack/react-simple-icons';
 
 export const AuthPage = () => {
   const navigate = useNavigate();
@@ -119,20 +120,14 @@ export const AuthPage = () => {
               Continue with Google
             </Button>
             <Button
-              onClick={async () => {
-                try {
-                  const res = await fetch('http://localhost:8001/api/v1/logout', {
-                    credentials: 'include',
-                  });
-                  console.log('Logout response:', res);
-                } catch (e) {
-                  console.error('Logout failed:', e);
-                }
+              onClick={() => {
+                window.location.href = 'http://localhost:8001/api/v1/auth/google';
               }}
               variant='outline'
               className='w-full flex items-center justify-center gap-2 cursor-pointer'>
-              <FcExpired className='w-5 h-5' />
-              Remove cookies
+              <SiGithub className='w-5 h-5' />
+              <SiRefinedgithub className='w-5 h-5' />
+              Continue with Google
             </Button>
           </div>
 
