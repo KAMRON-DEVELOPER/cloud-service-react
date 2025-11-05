@@ -26,7 +26,7 @@ export const AuthPage = () => {
       if (showUsernameField && username) payload.username = username;
       const result = await continueWithEmail(payload).unwrap();
 
-      if ('user' in result && 'tokens' in result) navigate('/');
+      if ('user' in result && 'tokens' in result) navigate('/dashboard');
       else if ('message' in result && result.message === 'new_user') setShowUsernameField(true);
       else if ('redirectTo' in result) navigate('/' + result.redirectTo);
     } catch (err) {
