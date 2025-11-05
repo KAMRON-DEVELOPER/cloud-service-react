@@ -10,6 +10,7 @@ import SettingsPage from '@/features/settings/SettingsPage';
 import HomePage from '@/features/users/HomePage';
 import ProjectsPage from '@/features/compute/ProjectsPage';
 import ProjectPage from '@/features/compute/ProjectPage';
+import VerifyPage from '@/features/users/VerifyPage';
 
 function App() {
   const routes: RouteObject[] = [
@@ -20,6 +21,10 @@ function App() {
     {
       path: '/auth',
       element: <AuthPage />,
+    },
+    {
+      path: '/verify',
+      element: <VerifyPage />,
     },
     {
       element: <PersistAuth />,

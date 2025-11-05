@@ -1,7 +1,18 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { FolderKanban, Server, Activity, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 const DashboardPage = () => {
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const verified = searchParams.get('verified');
+    if (verified === 'true') {
+      toast.success('Email verified successfully!');
+    }
+  }, []);
+
   // Mock data - replace with actual API calls
   const stats = {
     totalProjects: 5,
