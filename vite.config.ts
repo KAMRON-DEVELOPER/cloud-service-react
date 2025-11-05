@@ -23,14 +23,18 @@ export default defineConfig({
       '/api/v1/users': {
         target: 'http://localhost:8001',
         changeOrigin: true,
+        secure: false,
+        ws: true,
       },
       '/api/v1/compute': {
         target: 'http://localhost:8002',
         changeOrigin: true,
+        secure: false,
       },
       '/api/v1/billing': {
         target: 'http://localhost:8003',
         changeOrigin: true,
+        ws: true,
       },
     },
   },

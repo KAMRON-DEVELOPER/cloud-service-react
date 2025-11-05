@@ -1,4 +1,4 @@
-import { USERS_SERVICE_URL } from '@/consts';
+import { VITE_API_URL } from '@/consts';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -10,7 +10,7 @@ const VerifyPage = () => {
 
   useEffect(() => {
     if (token) {
-      fetch(`${USERS_SERVICE_URL}/auth/verify?token=${token}`, {
+      fetch(`${VITE_API_URL}/users/auth/verify?token=${token}`, {
         credentials: 'include',
       })
         .then(async (res) => {
