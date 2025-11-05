@@ -10,12 +10,11 @@ const VerifyPage = () => {
 
   useEffect(() => {
     if (token) {
-      fetch(`${VITE_API_URL}/users/auth/verify?token=${token}`, {
+      fetch(`${VITE_API_URL}users/auth/verify?token=${token}`, {
         credentials: 'include',
       })
         .then(async (res) => {
           if (res.ok) {
-            toast.success('Email verified successfully!');
             navigate('/dashboard?verified=true');
           } else {
             const error = await res.json();
@@ -23,8 +22,8 @@ const VerifyPage = () => {
             navigate('/auth');
           }
         })
-        .catch(() => {
-          toast.error('Something went wrong');
+        .catch((e) => {
+          toast.error(`Something went wrong, ${e}`);
           navigate('/auth');
         });
     }

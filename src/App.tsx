@@ -24,7 +24,7 @@ function App() {
       element: <AuthPage />,
     },
     {
-      path: '/verify',
+      path: '/auth/verify',
       element: <VerifyPage />,
     },
     {
