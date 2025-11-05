@@ -29,7 +29,7 @@ const baseQueryWithReauth: typeof baseQuery = async (args, api, extraOptions) =>
       const release = await mutex.acquire();
 
       try {
-        const refreshResult = await baseQuery({ url: '/auth/refresh', method: 'POST' }, api, extraOptions);
+        const refreshResult = await baseQuery({ url: 'users/auth/refresh', method: 'POST' }, api, extraOptions);
         if (!refreshResult.error && refreshResult.data) {
           result = await baseQuery(args, api, extraOptions);
         } else {
