@@ -7,24 +7,24 @@ import type {
   UpdateUserResponse,
   User,
 } from '@/features/types';
-import { api } from './api';
+import { api } from '@/services/api';
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getProfile: builder.query<GetUserResponse, void>({
-      query: () => '/profile',
+      query: () => '/users/profile',
     }),
     updateProfile: builder.mutation<UpdateUserResponse, User>({
-      query: (body) => ({ url: '/profile', method: 'PATCH', body: body }),
+      query: (body) => ({ url: '/users/profile', method: 'PATCH', body: body }),
       invalidatesTags: ['Auth'],
     }),
     deleteProfile: builder.mutation<void, void>({
-      query: () => ({ url: '/profile', method: 'DELETE' }),
+      query: () => ({ url: '/users/profile', method: 'DELETE' }),
       invalidatesTags: ['Auth'],
     }),
     continueWithEmail: builder.mutation<ContinueWithEmailResponse, { email: string; password: string }>({
       query: (body) => ({
-        url: '/auth/email',
+        url: '/users/auth/email',
         method: 'POST',
         body,
       }),
@@ -36,7 +36,7 @@ export const authApi = api.injectEndpoints({
     }),
     completeProfile: builder.mutation<CompleteProfileResponse, FormData>({
       query: (body) => ({
-        url: '/auth/complete',
+        url: '/users/auth/complete',
         method: 'PATCH',
         body,
       }),
@@ -44,13 +44,13 @@ export const authApi = api.injectEndpoints({
     }),
     refreshToken: builder.mutation<RefreshTokenResponse, void>({
       query: () => ({
-        url: '/auth/refresh',
+        url: '/users/auth/refresh',
         method: 'POST',
       }),
     }),
     logout: builder.mutation<void, void>({
       query: () => ({
-        url: '/auth/logout',
+        url: '/users/auth/logout',
         method: 'POST',
       }),
     }),

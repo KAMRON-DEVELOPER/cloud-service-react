@@ -18,9 +18,20 @@ export default defineConfig({
       // '@': path.resolve(__dirname, './src'),
     },
   },
-  // server: {
-  //   proxy: {
-  //     '/api/v1': 'http://localhost:8000',
-  //   },
-  // },
+  server: {
+    proxy: {
+      '/api/v1/users': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+      },
+      '/api/v1/compute': {
+        target: 'http://localhost:8002',
+        changeOrigin: true,
+      },
+      '/api/v1/billing': {
+        target: 'http://localhost:8003',
+        changeOrigin: true,
+      },
+    },
+  },
 });

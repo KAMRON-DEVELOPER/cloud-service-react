@@ -11,6 +11,7 @@ import HomePage from '@/features/users/HomePage';
 import ProjectsPage from '@/features/compute/ProjectsPage';
 import ProjectPage from '@/features/compute/ProjectPage';
 import VerifyPage from '@/features/users/VerifyPage';
+import { Toaster } from 'sonner';
 
 function App() {
   const routes: RouteObject[] = [
@@ -47,7 +48,16 @@ function App() {
 
   const router = createBrowserRouter(routes);
 
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster
+        position='top-right'
+        theme='dark'
+        richColors
+      />
+    </>
+  );
 }
 
 export default App;

@@ -1,6 +1,7 @@
 import { USERS_SERVICE_URL } from '@/consts';
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const VerifyPage = () => {
   const navigate = useNavigate();
@@ -9,13 +10,34 @@ const VerifyPage = () => {
 
   useEffect(() => {
     if (token) {
-      fetch(`${USERS_SERVICE_URL}/auth/verify?token=${token}`, { credentials: 'include' }).then((res) =>
-        res.ok ? navigate('/dashboard?verified=true') : navigate('/error')
-      );
+      fetch(`${USERS_SERVICE_URL}/auth/verify?token=${token}`, {
+        credentials: 'include',
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            toast.success('Email verified successfully!');
+            navigate('/dashboard?verified=true');
+          } else {
+            const error = await res.json();
+            toast.error(error.message || 'Verification failed');
+            navigate('/auth');
+          }
+        })
+        .catch(() => {
+          toast.error('Something went wrong');
+          navigate('/auth');
+        });
     }
-  }, [token]);
+  }, [token, navigate]);
 
-  return <></>;
+  return (
+    <div className='flex items-center justify-center min-h-screen bg-gray-950'>
+      <div className='text-center'>
+        <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4'></div>
+        <p className='text-gray-400'>Verifying your email...</p>
+      </div>
+    </div>
+  );
 };
 
 export default VerifyPage;
