@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Zap, Shield, BarChart3, Rocket, Server, DollarSign, ArrowRight, Check } from 'lucide-react';
+import { AuroraBackground } from '@/components/ui/shadcn-io/aurora-background';
 
 const HomePage = () => {
   const features = [
@@ -79,6 +80,14 @@ const HomePage = () => {
           </div>
         </div>
       </nav>
+
+      <AuroraBackground>
+        <div className='relative flex flex-col gap-4 items-center justify-center px-4'>
+          <div className='text-3xl md:text-7xl font-bold dark:text-white text-center'>Background lights are cool you know.</div>
+          <div className='font-extralight text-base md:text-4xl dark:text-neutral-200 py-4'>And this, is chemical burn.</div>
+          <button className='bg-black dark:bg-white rounded-full w-fit text-white dark:text-black px-4 py-2'>Debug now</button>
+        </div>
+      </AuroraBackground>
 
       {/* Hero Section */}
       <section className='pt-32 pb-20 px-6'>
