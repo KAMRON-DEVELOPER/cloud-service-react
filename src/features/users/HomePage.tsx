@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Rocket, ArrowRight } from 'lucide-react';
 
 import { OrbitingCircles } from '@/components/ui/orbiting-circles';
 import LightRays from '@/components/LightRays';
 import { FlickeringGrid } from '@/components/ui/shadcn-io/flickering-grid';
-import DiplodocusSvg from '@/assets/svgs/Poddle.svg?react';
+import AnimatedContent from '@/components/AnimatedContent';
+import { ArrowRight } from 'lucide-react';
+import BoxesSvg from '@/assets/icons/Boxes';
 const orbitIcons = {
   inner: ['PostgresSQL', 'Redis', 'RabbitMQ', 'Apache Kafka'],
   middle: ['Rust', 'Go', 'Python', 'Node.js', 'Java', 'TypeScript', 'PHP', 'Elixir', 'Zig'],
@@ -15,21 +16,18 @@ const HomePage = () => {
   return (
     <div className='min-h-screen'>
       {/* Navigation */}
-      <nav className='fixed top-2 right-8 left-8 h-14 rounded-full flex items-center justify-between backdrop-blur-lg bg-white/5 border-2 border-white shadow-lg'>
+      <nav className='fixed top-2 left-16 right-16 h-14 px-6 rounded-full flex items-center justify-between bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg z-50'>
         {/* Logo */}
         <Link
           to='/'
-          className='flex items-center gap-2'>
-          <div className='w-8 h-8 flex items-center justify-center'>
-            <DiplodocusSvg className='text-white' />
-          </div>
+          className='flex cursor-pointer'>
           <span className='text-xl font-bold text-white'>Poddle</span>
         </Link>
 
         {/* Right side */}
         <Link
-          to='/auth'
-          className='px-6 py-4 bg-white/5 rounded-full'>
+          className='flex cursor-pointer'
+          to='/auth'>
           Get Started
         </Link>
       </nav>
@@ -51,10 +49,10 @@ const HomePage = () => {
         />
 
         {/* Orbit */}
-        <div className='absolute right-56 top-56 flex h-[30vh] w-[30vh] flex-col items-center justify-center'>
+        <div className='absolute right-18 top-36 flex h-[30vw] w-[30vw] flex-col items-center justify-center'>
           <OrbitingCircles
-            iconSize={32}
-            radius={80}
+            iconSize={24}
+            radius={48}
             speed={4}>
             {orbitIcons.inner.map((name) => (
               <img
@@ -66,7 +64,7 @@ const HomePage = () => {
           </OrbitingCircles>
           <OrbitingCircles
             iconSize={30}
-            radius={120}
+            radius={96}
             speed={2}
             reverse>
             {orbitIcons.middle.map((name) => (
@@ -78,7 +76,7 @@ const HomePage = () => {
             ))}
           </OrbitingCircles>
           <OrbitingCircles
-            iconSize={25}
+            iconSize={36}
             radius={160}
             speed={1}>
             {orbitIcons.outer.map((name) => (
@@ -91,30 +89,37 @@ const HomePage = () => {
           </OrbitingCircles>
         </div>
 
-        <section className='absolute top-36 left-0 pt-32 pb-20 px-6'>
-          <div className='max-w-7xl mx-auto text-center'>
-            <div className='inline-flex items-center gap-2 px-4 py-2 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-sm mb-6'>
-              <Rocket className='w-4 h-4' />
-              <span>Deploy in seconds, scale in minutes</span>
+        <section className='absolute top-36 left-0 w-[70vw]'>
+          <AnimatedContent
+            distance={150}
+            direction='horizontal'
+            reverse={false}
+            duration={1.2}
+            ease='bounce.out'
+            initialOpacity={0.2}
+            animateOpacity
+            scale={1.1}
+            threshold={0.2}
+            delay={0.3}>
+            <div className='pl-8'>
+              <h1 className='text-3xl md:text-5xl font-bold text-white mb-6 leading-tight'>
+                Deploy your apps
+                <br />
+                <span className=''>without the hassle</span>
+              </h1>
+              <p className='text-xl text-gray-400 mb-8 max-w-2xl'>
+                Poddle is a modern Platform-as-a-Service that makes deploying and scaling your containers effortless. Focus on code, not infrastructure.
+              </p>
+              <div className='flex items-center justify-start'>
+                <Link
+                  to='/auth'
+                  className='flex items-center gap-2 text-lg font-medium px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/15 shadow-lg'>
+                  Try for free
+                  <ArrowRight className='w-5 h-5' />
+                </Link>
+              </div>
             </div>
-            <h1 className='text-5xl md:text-7xl font-bold text-white mb-6 leading-tight'>
-              Deploy your apps
-              <br />
-              <span className='text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-600'>without the hassle</span>
-            </h1>
-            <p className='text-xl text-gray-400 mb-8 max-w-2xl mx-auto'>
-              Poddle is a modern Platform-as-a-Service that makes deploying and scaling your containers effortless. Focus on code, not infrastructure.
-            </p>
-            <div className='flex items-center justify-center gap-4'>
-              <Link
-                to='/auth'
-                className='px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-lg font-medium'>
-                Start Free Trial
-                <ArrowRight className='w-5 h-5' />
-              </Link>
-              <button className='px-8 py-4 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors text-lg font-medium'>View Demo</button>
-            </div>
-          </div>
+          </AnimatedContent>
         </section>
       </div>
 

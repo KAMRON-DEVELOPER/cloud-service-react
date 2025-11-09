@@ -10,8 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@chakra-ui/react": "^3.29.0",
-    "@emotion/react": "^11.14.0",
     "@heroicons/react": "^2.2.0",
     "@icons-pack/react-simple-icons": "^13.8.0",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -40,6 +38,7 @@
     "flag-icons": "^7.5.0",
     "framer-motion": "^12.23.22",
     "google-map-react": "^2.2.5",
+    "gsap": "^3.13.0",
     "jwt-decode": "^4.0.0",
     "lucide-react": "^0.544.0",
     "motion": "^12.23.22",
