@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Zap, Shield, BarChart3, Rocket, Server, DollarSign, ArrowRight, Check } from 'lucide-react';
+
 import { AuroraBackground } from '@/components/ui/shadcn-io/aurora-background';
 
 const HomePage = () => {

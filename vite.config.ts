@@ -10,7 +10,7 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), svgr()],
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': resolve(__dirname, './src'),
       // You can add more aliases for specific directories, e.g.:
       // "@components": resolve(__dirname, "src/components"),
       // "@utils": resolve(__dirname, "src/utils"),
