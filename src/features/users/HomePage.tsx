@@ -198,15 +198,15 @@ const HomePage = () => {
 
       {/* CTA Section */}
       <section className='py-20 px-6 relative'>
+        <FlickeringGrid
+          className='absolute inset-0'
+          squareSize={4}
+          gridGap={6}
+          flickerChance={0.3}
+          color='rgb(52, 177, 235)'
+          maxOpacity={0.2}
+        />
         <div className='max-w-4xl mx-auto text-center rounded-2xl p-12'>
-          <FlickeringGrid
-            className='absolute inset-0'
-            squareSize={4}
-            gridGap={6}
-            flickerChance={0.3}
-            color='rgb(52, 177, 235)'
-            maxOpacity={0.2}
-          />
           <h2 className='text-4xl font-bold text-white mb-4'>Ready to deploy your first app?</h2>
           <p className='text-xl text-blue-100 mb-8'>Join thousands of developers shipping faster with Poddle</p>
           <Link
