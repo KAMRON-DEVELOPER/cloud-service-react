@@ -4,31 +4,24 @@ import { Rocket, ArrowRight } from 'lucide-react';
 import { OrbitingCircles } from '@/components/ui/orbiting-circles';
 import LightRays from '@/components/LightRays';
 import { FlickeringGrid } from '@/components/ui/shadcn-io/flickering-grid';
-
+import DiplodocusSvg from '@/assets/svgs/Poddle.svg?react';
 const orbitIcons = {
-  inner: ['Rust', 'Python', 'Go', 'Node.js', 'JavaScript'],
-  middle: ['FastAPI', 'React', 'Next.js', 'Django', 'Spring'],
-  outer: ['PostgresSQL', 'Redis', 'RabbitMQ', 'Apache Kafka', 'Docker'],
+  inner: ['PostgresSQL', 'Redis', 'RabbitMQ', 'Apache Kafka'],
+  middle: ['Rust', 'Go', 'Python', 'Node.js', 'Java', 'TypeScript', 'PHP', 'Elixir', 'Zig'],
+  outer: ['FastAPI', 'Django', 'Express', 'Nest.js', 'Spring', 'Laravel', 'Ruby on Rails', 'Next.js', 'React', 'Vue.js', 'Svelte', 'Solid.js', 'Angular'],
 };
 
 const HomePage = () => {
   return (
     <div className='min-h-screen'>
       {/* Navigation */}
-      <nav
-        className='fixed top-0 left-0 right-0 h-14 px-6 flex items-center justify-between 
-  backdrop-blur-md bg-white/5 border-b border-white/10 z-50'>
+      <nav className='fixed top-2 right-8 left-8 h-14 rounded-full flex items-center justify-between backdrop-blur-lg bg-white/5 border-2 border-white shadow-lg'>
         {/* Logo */}
-
         <Link
           to='/'
           className='flex items-center gap-2'>
           <div className='w-8 h-8 flex items-center justify-center'>
-            <img
-              src='/src/assets/svgs/diplodocus.svg'
-              alt='diplodocus.svg'
-              width='24px'
-            />
+            <DiplodocusSvg className='text-white' />
           </div>
           <span className='text-xl font-bold text-white'>Poddle</span>
         </Link>
@@ -36,20 +29,20 @@ const HomePage = () => {
         {/* Right side */}
         <Link
           to='/auth'
-          className='text-white hover:text-blue-400 transition-colors'>
+          className='px-6 py-4 bg-white/5 rounded-full'>
           Get Started
         </Link>
       </nav>
 
       {/* Hero Section */}
-      <div className='border-4 rounded-xs border-indigo-500 border-solid h-screen w-screen relative'>
-        {/* Light Ray */}
+      <div className='h-screen w-screen relative'>
+        {/* Light Rays */}
         <LightRays
           raysOrigin='top-center'
-          raysColor='#00ffff'
+          raysColor='#ffffff'
           raysSpeed={1.5}
           lightSpread={0.8}
-          rayLength={1.2}
+          rayLength={1}
           followMouse={true}
           mouseInfluence={0.1}
           noiseAmount={0.1}
@@ -58,50 +51,47 @@ const HomePage = () => {
         />
 
         {/* Orbit */}
-        <div className='absolute right-16 top-16'>
-          <div className='relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden'>
-            <OrbitingCircles
-              iconSize={40}
-              radius={80}>
-              {orbitIcons.inner.map((name) => (
-                <img
-                  key={name}
-                  src={`/src/assets/svgs/${name}.svg`}
-                  alt={name}
-                />
-              ))}
-            </OrbitingCircles>
-
-            <OrbitingCircles
-              iconSize={30}
-              radius={120}
-              speed={2}
-              reverse>
-              {orbitIcons.middle.map((name) => (
-                <img
-                  key={name}
-                  src={`/src/assets/svgs/${name}.svg`}
-                  alt={name}
-                />
-              ))}
-            </OrbitingCircles>
-
-            <OrbitingCircles
-              iconSize={25}
-              radius={160}
-              speed={3}>
-              {orbitIcons.outer.map((name) => (
-                <img
-                  key={name}
-                  src={`/src/assets/svgs/${name}.svg`}
-                  alt={name}
-                />
-              ))}
-            </OrbitingCircles>
-          </div>
+        <div className='absolute right-56 top-56 flex h-[30vh] w-[30vh] flex-col items-center justify-center'>
+          <OrbitingCircles
+            iconSize={32}
+            radius={80}
+            speed={4}>
+            {orbitIcons.inner.map((name) => (
+              <img
+                key={name}
+                src={`/src/assets/svgs/${name}.svg`}
+                alt={name}
+              />
+            ))}
+          </OrbitingCircles>
+          <OrbitingCircles
+            iconSize={30}
+            radius={120}
+            speed={2}
+            reverse>
+            {orbitIcons.middle.map((name) => (
+              <img
+                key={name}
+                src={`/src/assets/svgs/${name}.svg`}
+                alt={name}
+              />
+            ))}
+          </OrbitingCircles>
+          <OrbitingCircles
+            iconSize={25}
+            radius={160}
+            speed={1}>
+            {orbitIcons.outer.map((name) => (
+              <img
+                key={name}
+                src={`/src/assets/svgs/${name}.svg`}
+                alt={name}
+              />
+            ))}
+          </OrbitingCircles>
         </div>
 
-        <section className='pt-32 pb-20 px-6'>
+        <section className='absolute top-36 left-0 pt-32 pb-20 px-6'>
           <div className='max-w-7xl mx-auto text-center'>
             <div className='inline-flex items-center gap-2 px-4 py-2 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-sm mb-6'>
               <Rocket className='w-4 h-4' />
@@ -110,7 +100,7 @@ const HomePage = () => {
             <h1 className='text-5xl md:text-7xl font-bold text-white mb-6 leading-tight'>
               Deploy your apps
               <br />
-              <span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600'>without the hassle</span>
+              <span className='text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-600'>without the hassle</span>
             </h1>
             <p className='text-xl text-gray-400 mb-8 max-w-2xl mx-auto'>
               Poddle is a modern Platform-as-a-Service that makes deploying and scaling your containers effortless. Focus on code, not infrastructure.
