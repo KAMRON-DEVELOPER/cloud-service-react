@@ -9,6 +9,7 @@ import { TbMenu } from 'react-icons/tb';
 import { OrbitingCircles } from '@/components/ui/orbiting-circles';
 import LightRays from '@/components/LightRays';
 import GlassSurface from '@/components/GlassSurface';
+import { FlickeringGrid } from '@/components/ui/shadcn-io/flickering-grid';
 
 const HomePage = () => {
   const plans = [
@@ -114,68 +115,70 @@ const HomePage = () => {
       </div>
 
       {/* Hero Section */}
-      <AuroraBackground>
-        <section className='pt-32 pb-20 px-6'>
-          <div className='max-w-7xl mx-auto text-center'>
-            <div className='inline-flex items-center gap-2 px-4 py-2 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-sm mb-6'>
-              <Rocket className='w-4 h-4' />
-              <span>Deploy in seconds, scale in minutes</span>
-            </div>
-            <h1 className='text-5xl md:text-7xl font-bold text-white mb-6 leading-tight'>
-              Deploy your apps
-              <br />
-              <span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600'>without the hassle</span>
-            </h1>
-            <p className='text-xl text-gray-400 mb-8 max-w-2xl mx-auto'>
-              Poddle is a modern Platform-as-a-Service that makes deploying and scaling your containers effortless. Focus on code, not infrastructure.
-            </p>
-            <div className='flex items-center justify-center gap-4'>
-              <Link
-                to='/auth'
-                className='px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-lg font-medium'>
-                Start Free Trial
-                <ArrowRight className='w-5 h-5' />
-              </Link>
-              <button className='px-8 py-4 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors text-lg font-medium'>View Demo</button>
-            </div>
-
-            {/* Stats */}
-            <div className='grid grid-cols-3 gap-8 mt-20 max-w-3xl mx-auto'>
-              <div>
-                <div className='text-4xl font-bold text-white mb-2'>99.99%</div>
-                <div className='text-gray-400'>Uptime SLA</div>
+      <div className='border-4 rounded-xs border-indigo-500 border-solid h-screen w-screen'>
+        <AuroraBackground>
+          <section className='pt-32 pb-20 px-6'>
+            <div className='max-w-7xl mx-auto text-center'>
+              <div className='inline-flex items-center gap-2 px-4 py-2 bg-blue-600/10 border border-blue-600/20 rounded-full text-blue-400 text-sm mb-6'>
+                <Rocket className='w-4 h-4' />
+                <span>Deploy in seconds, scale in minutes</span>
               </div>
-              <div>
-                <div className='text-4xl font-bold text-white mb-2'>&lt;30s</div>
-                <div className='text-gray-400'>Deploy Time</div>
+              <h1 className='text-5xl md:text-7xl font-bold text-white mb-6 leading-tight'>
+                Deploy your apps
+                <br />
+                <span className='text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600'>without the hassle</span>
+              </h1>
+              <p className='text-xl text-gray-400 mb-8 max-w-2xl mx-auto'>
+                Poddle is a modern Platform-as-a-Service that makes deploying and scaling your containers effortless. Focus on code, not infrastructure.
+              </p>
+              <div className='flex items-center justify-center gap-4'>
+                <Link
+                  to='/auth'
+                  className='px-8 py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2 text-lg font-medium'>
+                  Start Free Trial
+                  <ArrowRight className='w-5 h-5' />
+                </Link>
+                <button className='px-8 py-4 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition-colors text-lg font-medium'>View Demo</button>
               </div>
-              <div>
-                <div className='text-4xl font-bold text-white mb-2'>10k+</div>
-                <div className='text-gray-400'>Deployments</div>
+
+              {/* Stats */}
+              <div className='grid grid-cols-3 gap-8 mt-20 max-w-3xl mx-auto'>
+                <div>
+                  <div className='text-4xl font-bold text-white mb-2'>99.99%</div>
+                  <div className='text-gray-400'>Uptime SLA</div>
+                </div>
+                <div>
+                  <div className='text-4xl font-bold text-white mb-2'>&lt;30s</div>
+                  <div className='text-gray-400'>Deploy Time</div>
+                </div>
+                <div>
+                  <div className='text-4xl font-bold text-white mb-2'>10k+</div>
+                  <div className='text-gray-400'>Deployments</div>
+                </div>
+              </div>
+
+              <div className='relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden'>
+                <OrbitingCircles iconSize={40}>
+                  <Search />
+                  <File />
+                  <Settings />
+                </OrbitingCircles>
+                <OrbitingCircles
+                  iconSize={30}
+                  radius={100}
+                  reverse
+                  speed={2}>
+                  <Search />
+                  <File />
+                  <Settings />
+                </OrbitingCircles>
               </div>
             </div>
+          </section>
+        </AuroraBackground>
+      </div>
 
-            <div className='relative flex h-[500px] w-full flex-col items-center justify-center overflow-hidden'>
-              <OrbitingCircles iconSize={40}>
-                <Search />
-                <File />
-                <Settings />
-              </OrbitingCircles>
-              <OrbitingCircles
-                iconSize={30}
-                radius={100}
-                reverse
-                speed={2}>
-                <Search />
-                <File />
-                <Settings />
-              </OrbitingCircles>
-            </div>
-          </div>
-        </section>
-      </AuroraBackground>
-
-      <div style={{ width: '100%', height: '600px', position: 'relative' }}>
+      <div className='border-4 rounded-xs border-indigo-500 border-solid h-screen w-screen relative'>
         <LightRays
           raysOrigin='top-center'
           raysColor='#00ffff'
@@ -191,52 +194,19 @@ const HomePage = () => {
       </div>
 
       {/* Pricing Section */}
-      <section className='py-20 px-6'>
-        <div className='max-w-7xl mx-auto'>
-          <div className='text-center mb-16'>
-            <h2 className='text-4xl font-bold text-white mb-4'>Simple, transparent pricing</h2>
-            <p className='text-xl text-gray-400'>Start free, scale as you grow</p>
-          </div>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
-            {plans.map((plan, index) => (
-              <div
-                key={index}
-                className={`p-8 rounded-xl border ${
-                  plan.popular ? 'bg-gradient-to-b from-blue-600/10 to-purple-600/10 border-blue-600' : 'bg-gray-800/50 border-gray-700'
-                }`}>
-                {plan.popular && <div className='inline-block px-3 py-1 bg-blue-600 text-white text-sm rounded-full mb-4'>Most Popular</div>}
-                <h3 className='text-2xl font-bold text-white mb-2'>{plan.name}</h3>
-                <div className='mb-4'>
-                  <span className='text-4xl font-bold text-white'>{plan.price}</span>
-                  {plan.price !== 'Custom' && <span className='text-gray-400'>/month</span>}
-                </div>
-                <p className='text-gray-400 mb-6'>{plan.description}</p>
-                <ul className='space-y-3 mb-8'>
-                  {plan.features.map((feature, fIndex) => (
-                    <li
-                      key={fIndex}
-                      className='flex items-center gap-3 text-gray-300'>
-                      <Check className='w-5 h-5 text-blue-400 flex-shrink-0' />
-                      <span>{feature}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  to='/auth'
-                  className={`block text-center px-6 py-3 rounded-lg font-medium transition-colors ${
-                    plan.popular ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-gray-700 text-white hover:bg-gray-600'
-                  }`}>
-                  Get Started
-                </Link>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      <section className='py-20 px-6'></section>
 
       {/* CTA Section */}
-      <section className='py-20 px-6'>
-        <div className='max-w-4xl mx-auto text-center bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-12'>
+      <section className='py-20 px-6 relative'>
+        <div className='max-w-4xl mx-auto text-center rounded-2xl p-12'>
+          <FlickeringGrid
+            className='absolute inset-0'
+            squareSize={4}
+            gridGap={6}
+            flickerChance={0.3}
+            color='rgb(52, 177, 235)'
+            maxOpacity={0.2}
+          />
           <h2 className='text-4xl font-bold text-white mb-4'>Ready to deploy your first app?</h2>
           <p className='text-xl text-blue-100 mb-8'>Join thousands of developers shipping faster with Poddle</p>
           <Link
