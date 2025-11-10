@@ -1,7 +1,13 @@
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Users, Server, Database, GitBranch } from 'lucide-react';
+import { Users, Server } from 'lucide-react';
 
 const stats = [
+  {
+    title: 'Total Users',
+    value: '1,000+',
+    icon: <Users className='w-8 h-8 text-blue-400' />,
+    description: 'Containers running live right now.',
+  },
   {
     title: 'Active Deployments',
     value: '1,200+',
@@ -13,18 +19,6 @@ const stats = [
     value: '500+',
     icon: <Users className='w-8 h-8 text-purple-400' />,
     description: 'Building and scaling their projects.',
-  },
-  {
-    title: 'Managed Databases',
-    value: '850',
-    icon: <Database className='w-8 h-8 text-green-400' />,
-    description: 'PostgreSQL, Redis, and more.',
-  },
-  {
-    title: 'Git Pushes',
-    value: '22k',
-    icon: <GitBranch className='w-8 h-8 text-orange-400' />,
-    description: 'Deployments triggered this month.',
   },
 ];
 

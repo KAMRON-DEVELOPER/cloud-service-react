@@ -1,5 +1,5 @@
 import PoddleSvg from '@/assets/icons/PoddleSvg';
-import ThemeToggle from '@/features/users/Home/ThemeToggle';
+// import ThemeToggle from '@/features/users/Home/ThemeToggle';
 import { Link } from 'react-router-dom';
 
 const Navbar = () => {
@@ -15,7 +15,7 @@ const Navbar = () => {
 
       {/* Right side */}
       <div className='flex gap-4 items-center'>
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
         <Link
           className='flex cursor-pointer text-primary font-medium text-lg'
           to='/auth'>
