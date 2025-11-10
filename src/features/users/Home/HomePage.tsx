@@ -11,17 +11,19 @@ const HomePage = () => {
       {/* Navbar */}
       <Navbar />
 
-      {/* Hero */}
-      <Hero />
+      <main>
+        {/* Hero */}
+        <Hero />
 
-      {/* Laser Animation */}
-      <LaserAnimation />
+        {/* Laser Animation & Preview */}
+        <LaserAnimation />
 
-      {/* Stats */}
-      <Stats />
+        {/* Stats */}
+        <Stats />
 
-      {/* Price calculator */}
-      <PricingCalculator />
+        {/* Price calculator */}
+        <PricingCalculator />
+      </main>
 
       {/* Footer */}
       <Footer />

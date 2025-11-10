@@ -1,3 +1,5 @@
+import PoddleSvg from '@/assets/icons/PoddleSvg';
+
 const Footer = () => {
   return (
     <footer className='border-t border-gray-800 py-12 px-6'>
@@ -5,9 +7,8 @@ const Footer = () => {
         <div className='grid grid-cols-1 md:grid-cols-4 gap-8'>
           <div>
             <div className='flex items-center gap-2 mb-4'>
-              <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
-                <span className='text-white font-bold text-xl'>P</span>
-              </div>
+              {/* Use your SVG component */}
+              <PoddleSvg className='w-8 h-8 text-blue-600' />
               <span className='text-xl font-bold text-white'>Poddle</span>
             </div>
             <p className='text-gray-400 text-sm'>Deploy and scale your applications with ease.</p>
