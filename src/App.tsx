@@ -7,7 +7,7 @@ import PersistAuth from '@/layouts/PersistAuth';
 import ProfilePage from '@/features/users/ProfilePage';
 import ResourcePage from '@/features/compute/ResourcePage';
 import SettingsPage from '@/features/settings/SettingsPage';
-import HomePage from '@/features/users/HomePage';
+import HomePage from '@/features/users/Home/HomePage';
 import ProjectsPage from '@/features/compute/ProjectsPage';
 import ProjectPage from '@/features/compute/ProjectPage';
 import VerifyPage from '@/features/users/VerifyPage';
