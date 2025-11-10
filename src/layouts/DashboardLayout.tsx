@@ -11,11 +11,13 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
+  SidebarInset,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import {
   DropdownMenu,
@@ -112,21 +114,20 @@ const DashboardLayout = () => {
   return (
     <SidebarProvider>
       <div className='flex min-h-screen w-full'>
-        <Sidebar>
+        <Sidebar variant='sidebar'>
           {/* Sidebar Header */}
           <SidebarHeader>
             <SidebarMenu>
               <SidebarMenuItem>
+                <ToggleTrigger />
                 <Link
                   to='/dashboard'
                   className='flex items-center gap-2 px-2 py-2'>
-                  <PoddleSvg className='w-6 h-6 text-primary' />
                   <span className='text-xl font-bold'>Poddle</span>
                 </Link>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarHeader>
-
           {/* Sidebar Content */}
           <SidebarContent>
             <SidebarGroup>
@@ -150,7 +151,6 @@ const DashboardLayout = () => {
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
-
           {/* Sidebar Footer */}
           <SidebarFooter>
             <SidebarMenu>
@@ -220,15 +220,27 @@ const DashboardLayout = () => {
         </Sidebar>
 
         {/* Main Content */}
+        {/* <SidebarInset> */}
         <div className='flex-1 flex flex-col overflow-hidden'>
           {/* Page Content */}
           <main className='flex-1 overflow-y-auto p-6'>
             <Outlet />
           </main>
         </div>
+        {/* </SidebarInset> */}
       </div>
     </SidebarProvider>
   );
 };
 
 export default DashboardLayout;
+
+const ToggleTrigger = () => {
+  const { toggleSidebar } = useSidebar();
+  return (
+    <PoddleSvg
+      className='w-6 h-6 text-primary'
+      onClick={toggleSidebar}
+    />
+  );
+};
