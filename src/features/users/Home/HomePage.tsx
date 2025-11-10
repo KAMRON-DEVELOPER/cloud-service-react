@@ -1,6 +1,3 @@
-import { Link } from 'react-router-dom';
-
-import AnimatedContent from '@/components/AnimatedContent';
 import Footer from './Footer';
 import LaserAnimation from './LaserAnimation';
 import Stats from './Stats';
