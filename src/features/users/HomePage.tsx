@@ -1,16 +1,9 @@
 import { Link } from 'react-router-dom';
 
-import { OrbitingCircles } from '@/components/ui/orbiting-circles';
 import LightRays from '@/components/LightRays';
 import { FlickeringGrid } from '@/components/ui/shadcn-io/flickering-grid';
 import AnimatedContent from '@/components/AnimatedContent';
 import { ArrowRight } from 'lucide-react';
-import BoxesSvg from '@/assets/icons/Boxes';
-const orbitIcons = {
-  inner: ['PostgresSQL', 'Redis', 'RabbitMQ', 'Apache Kafka'],
-  middle: ['Rust', 'Go', 'Python', 'Node.js', 'Java', 'TypeScript', 'PHP', 'Elixir', 'Zig'],
-  outer: ['FastAPI', 'Django', 'Express', 'Nest.js', 'Spring', 'Laravel', 'Ruby on Rails', 'Next.js', 'React', 'Vue.js', 'Svelte', 'Solid.js', 'Angular'],
-};
 
 const HomePage = () => {
   return (
@@ -47,47 +40,6 @@ const HomePage = () => {
           distortion={0.05}
           className='absolute'
         />
-
-        {/* Orbit */}
-        <div className='absolute right-18 top-36 flex h-[30vw] w-[30vw] flex-col items-center justify-center'>
-          <OrbitingCircles
-            iconSize={24}
-            radius={48}
-            speed={4}>
-            {orbitIcons.inner.map((name) => (
-              <img
-                key={name}
-                src={`/src/assets/svgs/${name}.svg`}
-                alt={name}
-              />
-            ))}
-          </OrbitingCircles>
-          <OrbitingCircles
-            iconSize={30}
-            radius={96}
-            speed={2}
-            reverse>
-            {orbitIcons.middle.map((name) => (
-              <img
-                key={name}
-                src={`/src/assets/svgs/${name}.svg`}
-                alt={name}
-              />
-            ))}
-          </OrbitingCircles>
-          <OrbitingCircles
-            iconSize={36}
-            radius={160}
-            speed={1}>
-            {orbitIcons.outer.map((name) => (
-              <img
-                key={name}
-                src={`/src/assets/svgs/${name}.svg`}
-                alt={name}
-              />
-            ))}
-          </OrbitingCircles>
-        </div>
 
         <section className='absolute top-36 left-0 w-[70vw]'>
           <AnimatedContent
