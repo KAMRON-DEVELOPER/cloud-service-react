@@ -1,16 +1,37 @@
-// src/layouts/SidebarLayout.tsx
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
-import { LayoutDashboard, FolderKanban, Server, Database, Settings, User, LogOut, Menu, X, ChevronDown, Activity, DollarSign } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, Server, Database, Activity, DollarSign, Settings, LogOut, ChevronsUpDown, CreditCard, UserCircle } from 'lucide-react';
 import { useLogoutMutation } from '@/services/auth';
-import { useAppDispatch } from '@/store/store';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import PoddleSvg from '@/assets/icons/PoddleSvg';
 
 interface NavItem {
   name: string;
   path: string;
   icon: React.ReactNode;
-  children?: NavItem[];
 }
 
 const DashboardLayout = () => {
@@ -18,58 +39,43 @@ const DashboardLayout = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+
+  // Get user data from Redux store
+  const user = useAppSelector((state) => state.auth.user);
+  const balance = useAppSelector((state) => state.stats?.balance) || 0;
 
   const navItems: NavItem[] = [
     {
       name: 'Dashboard',
       path: '/dashboard',
-      icon: <LayoutDashboard className='w-5 h-5' />,
+      icon: <LayoutDashboard className='w-4 h-4' />,
     },
     {
       name: 'Projects',
       path: '/projects',
-      icon: <FolderKanban className='w-5 h-5' />,
+      icon: <FolderKanban className='w-4 h-4' />,
     },
     {
       name: 'Deployments',
       path: '/deployments',
-      icon: <Server className='w-5 h-5' />,
+      icon: <Server className='w-4 h-4' />,
     },
     {
       name: 'Resources',
       path: '/resources',
-      icon: <Database className='w-5 h-5' />,
+      icon: <Database className='w-4 h-4' />,
     },
     {
       name: 'Monitoring',
       path: '/monitoring',
-      icon: <Activity className='w-5 h-5' />,
+      icon: <Activity className='w-4 h-4' />,
     },
     {
       name: 'Billing',
       path: '/billing',
-      icon: <DollarSign className='w-5 h-5' />,
+      icon: <DollarSign className='w-4 h-4' />,
     },
   ];
-
-  const bottomNavItems: NavItem[] = [
-    {
-      name: 'Profile',
-      path: '/profile',
-      icon: <User className='w-5 h-5' />,
-    },
-    {
-      name: 'Settings',
-      path: '/settings',
-      icon: <Settings className='w-5 h-5' />,
-    },
-  ];
-
-  const toggleExpanded = (itemName: string) => {
-    setExpandedItems((prev) => (prev.includes(itemName) ? prev.filter((name) => name !== itemName) : [...prev, itemName]));
-  };
 
   const handleLogout = async () => {
     try {
@@ -85,171 +91,143 @@ const DashboardLayout = () => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
-  const NavItemComponent = ({ item }: { item: NavItem }) => {
-    const isActive = isActivePath(item.path);
-    const hasChildren = item.children && item.children.length > 0;
-    const isExpanded = expandedItems.includes(item.name);
+  const getUserInitials = () => {
+    if (!user?.username) return 'U';
+    return user.username
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
-    return (
-      <div>
-        <Link
-          to={hasChildren ? '#' : item.path}
-          onClick={(e) => {
-            if (hasChildren) {
-              e.preventDefault();
-              toggleExpanded(item.name);
-            } else {
-              setSidebarOpen(false);
-            }
-          }}
-          className={`flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
-            isActive ? 'bg-blue-600 text-white' : 'text-gray-300 hover:bg-gray-800'
-          }`}>
-          <div className='flex items-center gap-3'>
-            {item.icon}
-            <span className='font-medium'>{item.name}</span>
-          </div>
-          {hasChildren && <ChevronDown className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />}
-        </Link>
-
-        {hasChildren && isExpanded && (
-          <div className='ml-6 mt-1 space-y-1'>
-            {item.children!.map((child) => (
-              <Link
-                key={child.path}
-                to={child.path}
-                onClick={() => setSidebarOpen(false)}
-                className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors ${
-                  isActivePath(child.path) ? 'bg-blue-600 text-white' : 'text-gray-400 hover:bg-gray-800 hover:text-gray-200'
-                }`}>
-                {child.icon}
-                <span className='text-sm'>{child.name}</span>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    );
+  const formatBalance = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    }).format(amount);
   };
 
   return (
-    <div className='flex h-screen bg-gray-950'>
-      {/* Sidebar for desktop */}
-      <aside className='hidden lg:flex lg:flex-col lg:w-64 bg-gray-900 border-r border-gray-800'>
-        {/* Logo */}
-        <div className='p-6 border-b border-gray-800'>
-          <Link
-            to='/dashboard'
-            className='flex items-center gap-2'>
-            <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
-              <span className='text-white font-bold text-xl'>P</span>
-            </div>
-            <span className='text-xl font-bold text-white'>Poddle</span>
-          </Link>
+    <SidebarProvider>
+      <div className='flex min-h-screen w-full'>
+        <Sidebar>
+          {/* Sidebar Header */}
+          <SidebarHeader>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <Link
+                  to='/dashboard'
+                  className='flex items-center gap-2 px-2 py-2'>
+                  <PoddleSvg className='w-6 h-6 text-primary' />
+                  <span className='text-xl font-bold'>Poddle</span>
+                </Link>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarHeader>
+
+          {/* Sidebar Content */}
+          <SidebarContent>
+            <SidebarGroup>
+              <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {navItems.map((item) => (
+                    <SidebarMenuItem key={item.path}>
+                      <SidebarMenuButton
+                        asChild
+                        isActive={isActivePath(item.path)}
+                        tooltip={item.name}>
+                        <Link to={item.path}>
+                          {item.icon}
+                          <span>{item.name}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </SidebarContent>
+
+          {/* Sidebar Footer */}
+          <SidebarFooter>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton
+                      size='lg'
+                      className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
+                      <Avatar className='h-8 w-8 rounded-lg'>
+                        <AvatarImage
+                          src={user?.picture || ''}
+                          alt={user?.username}
+                        />
+                        <AvatarFallback className='rounded-lg bg-blue-600 text-white'>{getUserInitials()}</AvatarFallback>
+                      </Avatar>
+                      <div className='grid flex-1 text-left text-sm leading-tight'>
+                        <span className='truncate font-semibold'>{user?.username || 'User'}</span>
+                        <span className='truncate text-xs text-muted-foreground'>{formatBalance(balance)}</span>
+                      </div>
+                      <ChevronsUpDown className='ml-auto size-4' />
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+                    side='bottom'
+                    align='end'
+                    sideOffset={4}>
+                    <DropdownMenuLabel className='p-0 font-normal'>
+                      <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+                        <Avatar className='h-8 w-8 rounded-lg'>
+                          <AvatarImage
+                            src={user?.picture || ''}
+                            alt={user?.username}
+                          />
+                          <AvatarFallback className='rounded-lg bg-blue-600 text-white'>{getUserInitials()}</AvatarFallback>
+                        </Avatar>
+                        <div className='grid flex-1 text-left text-sm leading-tight'>
+                          <span className='truncate font-semibold'>{user?.username || 'User'}</span>
+                          <span className='truncate text-xs text-muted-foreground'>{user?.email || ''}</span>
+                        </div>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/profile')}>
+                      <UserCircle className='w-4 h-4 mr-2' />
+                      Account
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/billing')}>
+                      <CreditCard className='w-4 h-4 mr-2' />
+                      Billing
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/settings')}>
+                      <Settings className='w-4 h-4 mr-2' />
+                      Settings
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout}>
+                      <LogOut className='w-4 h-4 mr-2' />
+                      Log out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarFooter>
+        </Sidebar>
+
+        {/* Main Content */}
+        <div className='flex-1 flex flex-col overflow-hidden'>
+          {/* Page Content */}
+          <main className='flex-1 overflow-y-auto p-6'>
+            <Outlet />
+          </main>
         </div>
-
-        {/* Navigation */}
-        <nav className='flex-1 px-4 py-6 space-y-2 overflow-y-auto'>
-          {navItems.map((item) => (
-            <NavItemComponent
-              key={item.path}
-              item={item}
-            />
-          ))}
-        </nav>
-
-        {/* Bottom navigation */}
-        <div className='p-4 border-t border-gray-800 space-y-2'>
-          {bottomNavItems.map((item) => (
-            <NavItemComponent
-              key={item.path}
-              item={item}
-            />
-          ))}
-          <button
-            onClick={handleLogout}
-            className='w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors'>
-            <LogOut className='w-5 h-5' />
-            <span className='font-medium'>Logout</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* Mobile sidebar */}
-      <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
-        {/* Backdrop */}
-        <div
-          className='fixed inset-0 bg-black/50'
-          onClick={() => setSidebarOpen(false)}
-        />
-
-        {/* Sidebar */}
-        <aside className='fixed inset-y-0 left-0 w-64 bg-gray-900 border-r border-gray-800 flex flex-col'>
-          {/* Logo */}
-          <div className='p-6 border-b border-gray-800 flex items-center justify-between'>
-            <Link
-              to='/dashboard'
-              className='flex items-center gap-2'>
-              <div className='w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center'>
-                <span className='text-white font-bold text-xl'>P</span>
-              </div>
-              <span className='text-xl font-bold text-white'>Poddle</span>
-            </Link>
-            <button
-              onClick={() => setSidebarOpen(false)}
-              className='text-gray-400 hover:text-white'>
-              <X className='w-6 h-6' />
-            </button>
-          </div>
-
-          {/* Navigation */}
-          <nav className='flex-1 px-4 py-6 space-y-2 overflow-y-auto'>
-            {navItems.map((item) => (
-              <NavItemComponent
-                key={item.path}
-                item={item}
-              />
-            ))}
-          </nav>
-
-          {/* Bottom navigation */}
-          <div className='p-4 border-t border-gray-800 space-y-2'>
-            {bottomNavItems.map((item) => (
-              <NavItemComponent
-                key={item.path}
-                item={item}
-              />
-            ))}
-            <button
-              onClick={handleLogout}
-              className='w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors'>
-              <LogOut className='w-5 h-5' />
-              <span className='font-medium'>Logout</span>
-            </button>
-          </div>
-        </aside>
       </div>
-
-      {/* Main content */}
-      <div className='flex-1 flex flex-col overflow-hidden'>
-        {/* Top bar */}
-        <header className='bg-gray-900 border-b border-gray-800 px-6 py-4 flex items-center justify-between lg:justify-end'>
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className='lg:hidden text-gray-300 hover:text-white'>
-            <Menu className='w-6 h-6' />
-          </button>
-
-          {/* You can add user profile dropdown or other header items here */}
-          <div className='flex items-center gap-4'>{/* Add notifications, user avatar, etc. */}</div>
-        </header>
-
-        {/* Page content */}
-        <main className='flex-1 overflow-y-auto bg-gray-950 p-6'>
-          <Outlet />
-        </main>
-      </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
