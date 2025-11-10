@@ -4,6 +4,7 @@ import AnimatedContent from '@/components/AnimatedContent';
 import { ArrowRight } from 'lucide-react';
 import LaserFlow from '@/components/LaserFlow';
 import PoddleSvg from '@/assets/icons/PoddleSvg';
+import NavbarThemeSwitcher from '@/components/NavbarThemeSwitcher';
 
 const HomePage = () => {
   return (
@@ -19,14 +20,17 @@ const HomePage = () => {
         </Link>
 
         {/* Right side */}
-        <Link
-          className='flex cursor-pointer'
-          to='/auth'>
-          Get Started
-        </Link>
+        <div className='flex gap-2 items-center'>
+          <NavbarThemeSwitcher />
+          <Link
+            className='flex cursor-pointer'
+            to='/auth'>
+            Get Started
+          </Link>
+        </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero */}
       <section className='absolute top-36 left-0 w-[70vw] z-1'>
         <AnimatedContent
           distance={150}
