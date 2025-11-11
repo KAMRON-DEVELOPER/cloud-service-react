@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FolderKanban, Server, Database, Activity, DollarSign, Settings, LogOut, ChevronsUpDown, CreditCard, UserCircle } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, Server, Database, Settings, LogOut, ChevronsUpDown, CreditCard, UserCircle } from 'lucide-react';
 import { useLogoutMutation } from '@/services/auth';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
@@ -16,7 +16,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
 import {
@@ -63,19 +62,9 @@ const DashboardLayout = () => {
       icon: <Server className='w-4 h-4' />,
     },
     {
-      name: 'Resources',
-      path: '/resources',
+      name: 'Databases',
+      path: '/databases',
       icon: <Database className='w-4 h-4' />,
-    },
-    {
-      name: 'Monitoring',
-      path: '/monitoring',
-      icon: <Activity className='w-4 h-4' />,
-    },
-    {
-      name: 'Billing',
-      path: '/billing',
-      icon: <DollarSign className='w-4 h-4' />,
     },
   ];
 
@@ -128,6 +117,7 @@ const DashboardLayout = () => {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarHeader>
+
           {/* Sidebar Content */}
           <SidebarContent>
             <SidebarGroup>
@@ -151,6 +141,7 @@ const DashboardLayout = () => {
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
+
           {/* Sidebar Footer */}
           <SidebarFooter>
             <SidebarMenu>
@@ -220,14 +211,14 @@ const DashboardLayout = () => {
         </Sidebar>
 
         {/* Main Content */}
-        {/* <SidebarInset> */}
-        <div className='flex-1 flex flex-col overflow-hidden'>
-          {/* Page Content */}
-          <main className='flex-1 overflow-y-auto p-6'>
-            <Outlet />
-          </main>
-        </div>
-        {/* </SidebarInset> */}
+        <SidebarInset>
+          <div className='flex-1 flex flex-col overflow-hidden'>
+            {/* Page Content */}
+            <main className='flex-1 overflow-y-auto p-6'>
+              <Outlet />
+            </main>
+          </div>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );

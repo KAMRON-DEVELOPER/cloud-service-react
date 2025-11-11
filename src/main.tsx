@@ -4,6 +4,9 @@ import { store } from '@/store/store';
 import { Provider } from 'react-redux';
 import '@/styles/globals.css';
 import { ThemeProvider } from 'next-themes';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+const queryClient = new QueryClient();
 
 createRoot(document.getElementById('root')!).render(
   <Provider store={store}>
@@ -12,7 +15,9 @@ createRoot(document.getElementById('root')!).render(
       defaultTheme='system'
       attribute='class'
       enableSystem>
-      <App />
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
     </ThemeProvider>
   </Provider>
 );
