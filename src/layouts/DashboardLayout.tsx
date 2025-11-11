@@ -1,8 +1,10 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Rocket, Database, Settings, LogOut, ChevronsUpDown, CreditCard, UserCircle } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, Settings, LogOut, ChevronsUpDown, ChevronRight } from 'lucide-react';
 import { useLogoutMutation } from '@/services/auth';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
+import { useGetProjectsQuery } from '@/services/compute';
+import { useState } from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -15,8 +17,10 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
   SidebarProvider,
-  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
 import {
@@ -29,41 +33,21 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import PoddleSvg from '@/assets/icons/PoddleSvg';
-import { Separator } from '@/components/ui/separator';
-
-interface NavItem {
-  name: string;
-  path: string;
-  icon: React.ReactNode;
-}
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 const DashboardLayout = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
+  const [projectsOpen, setProjectsOpen] = useState(true);
 
   // Get user data from Redux store
   const user = useAppSelector((state) => state.auth.user);
   const balance = useAppSelector((state) => state.stats?.balance) || 0;
 
-  const navItems: NavItem[] = [
-    {
-      name: 'Dashboard',
-      path: '/dashboard',
-      icon: <LayoutDashboard className='w-4 h-4' />,
-    },
-    {
-      name: 'Projects',
-      path: '/projects',
-      icon: <Rocket className='w-4 h-4' />,
-    },
-    {
-      name: 'Databases',
-      path: '/databases',
-      icon: <Database className='w-4 h-4' />,
-    },
-  ];
+  // Fetch projects
+  const { data: projectsData } = useGetProjectsQuery();
 
   const handleLogout = async () => {
     try {
@@ -100,16 +84,16 @@ const DashboardLayout = () => {
   return (
     <SidebarProvider>
       <Sidebar variant='sidebar'>
-        {/* Sidebar Header */}
+        {/* Sidebar Header - Brand with toggle functionality */}
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
-              <ToggleTrigger />
-              <Link
-                to='/dashboard'
-                className='flex items-center gap-2 px-2 py-2'>
-                <span className='text-xl font-bold'>Poddle</span>
-              </Link>
+              <SidebarMenuButton
+                size='lg'
+                asChild
+                className='hover:bg-sidebar-accent cursor-pointer'>
+                <BrandTrigger />
+              </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
@@ -117,28 +101,72 @@ const DashboardLayout = () => {
         {/* Sidebar Content */}
         <SidebarContent>
           <SidebarGroup>
-            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {navItems.map((item) => (
-                  <SidebarMenuItem key={item.path}>
-                    <SidebarMenuButton
-                      asChild
-                      isActive={isActivePath(item.path)}
-                      tooltip={item.name}>
-                      <Link to={item.path}>
-                        {item.icon}
-                        <span>{item.name}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                {/* Dashboard */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActivePath('/dashboard')}
+                    tooltip='Dashboard'>
+                    <Link to='/dashboard'>
+                      <LayoutDashboard className='w-4 h-4' />
+                      <span>Dashboard</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+
+                {/* Projects - Collapsible */}
+                <Collapsible
+                  open={projectsOpen}
+                  onOpenChange={setProjectsOpen}
+                  className='group/collapsible'>
+                  <SidebarMenuItem>
+                    <CollapsibleTrigger asChild>
+                      <SidebarMenuButton
+                        tooltip='Projects'
+                        isActive={isActivePath('/projects') || isActivePath('/project/')}>
+                        <FolderKanban className='w-4 h-4' />
+                        <span>Projects</span>
+                        <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+                      </SidebarMenuButton>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <SidebarMenuSub>
+                        {projectsData?.projects.map((project) => (
+                          <SidebarMenuSubItem key={project.id}>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={location.pathname === `/project/${project.id}`}>
+                              <Link to={`/project/${project.id}`}>
+                                <span>{project.name}</span>
+                              </Link>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        ))}
+                      </SidebarMenuSub>
+                    </CollapsibleContent>
                   </SidebarMenuItem>
-                ))}
+                </Collapsible>
+
+                {/* Settings */}
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isActivePath('/settings')}
+                    tooltip='Settings'>
+                    <Link to='/settings'>
+                      <Settings className='w-4 h-4' />
+                      <span>Settings</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
 
-        {/* Sidebar Footer */}
+        {/* Sidebar Footer - User profile with balance */}
         <SidebarFooter>
           <SidebarMenu>
             <SidebarMenuItem>
@@ -182,14 +210,6 @@ const DashboardLayout = () => {
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    <UserCircle className='w-4 h-4 mr-2' />
-                    Account
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/billing')}>
-                    <CreditCard className='w-4 h-4 mr-2' />
-                    Billing
-                  </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate('/settings')}>
                     <Settings className='w-4 h-4 mr-2' />
                     Settings
@@ -208,13 +228,8 @@ const DashboardLayout = () => {
 
       {/* Main Content */}
       <SidebarInset>
-        <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>
-          <SidebarTrigger className='-ml-1' />
-          <Separator
-            orientation='vertical'
-            className='mr-2 data-[orientation=vertical]:h-4'
-          />
-        </header>
+        {/* Empty header without breadcrumbs and trigger */}
+        <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>{/* Empty - just spacing */}</header>
         <div className='flex-1 flex flex-col overflow-hidden'>
           {/* Page Content */}
           <main className='flex-1 overflow-y-auto p-6'>
@@ -228,12 +243,19 @@ const DashboardLayout = () => {
 
 export default DashboardLayout;
 
-const ToggleTrigger = () => {
+// Brand trigger component that acts as sidebar toggle
+const BrandTrigger = () => {
   const { toggleSidebar } = useSidebar();
+
   return (
-    <PoddleSvg
-      className='w-6 h-6 text-primary'
+    <div
       onClick={toggleSidebar}
-    />
+      className='flex items-center gap-2 w-full'>
+      <PoddleSvg className='w-8 h-8 text-primary' />
+      <div className='flex flex-col gap-0.5'>
+        <span className='text-lg font-bold'>Poddle</span>
+        <span className='text-xs text-muted-foreground'>Cloud Platform</span>
+      </div>
+    </div>
   );
 };
