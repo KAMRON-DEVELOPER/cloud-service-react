@@ -20,8 +20,8 @@ export const computeApi = api.injectEndpoints({
       providesTags: ['Project'],
     }),
     getProject: builder.query<Project, string>({
-      query: (id) => ({
-        url: `compute/project/${id}`,
+      query: (projectId) => ({
+        url: `compute/projects/${projectId}`,
       }),
       providesTags: (_result, _error, id) => [{ type: 'Project', id }],
     }),
@@ -33,58 +33,54 @@ export const computeApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Project'],
     }),
-    updateProject: builder.mutation<Project, { id: string; data: UpdateProjectRequest }>({
-      query: ({ id, data }) => ({
-        url: `compute/project/${id}`,
+    updateProject: builder.mutation<Project, { projectId: string; data: UpdateProjectRequest }>({
+      query: ({ projectId, data }) => ({
+        url: `compute/projects/${projectId}`,
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Project', id }, 'Project'],
+      invalidatesTags: (_result, _error, { projectId }) => [{ type: 'Project', projectId }, 'Project'],
     }),
     deleteProject: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `compute/project/${id}`,
+      query: (projectId) => ({
+        url: `compute/projects/${projectId}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Project'],
     }),
 
     // Deployments
-    getDeployments: builder.query<{ deployments: Deployment[]; total: number }, { projectId?: string }>({
-      query: (params) => {
-        const qs = new URLSearchParams();
-        if (params.projectId) qs.set('projectId', params.projectId);
-        return {
-          url: `compute/deployments${qs.toString() ? `?${qs.toString()}` : ''}`,
-        };
-      },
+    getDeployments: builder.query<{ data: Deployment[]; total: number }, string>({
+      query: (projectId) => ({
+        url: `compute/project/${projectId}/deployments`,
+      }),
       providesTags: ['Deployment'],
     }),
-    getDeployment: builder.query<Deployment, string>({
-      query: (id) => ({
-        url: `compute/deployment/${id}`,
+    getDeployment: builder.query<Deployment, { projectId: string; deploymentId: string }>({
+      query: ({ projectId, deploymentId }) => ({
+        url: `compute/project/${projectId}/deployments/${deploymentId}`,
       }),
-      providesTags: (_result, _error, id) => [{ type: 'Deployment', id }],
+      providesTags: (_result, _error, deploymentId) => [{ type: 'Deployment', deploymentId }],
     }),
-    createDeployment: builder.mutation<Deployment, CreateDeploymentRequest>({
-      query: (body) => ({
-        url: `compute/deployments`,
+    createDeployment: builder.mutation<Deployment, { projectId: string; data: CreateDeploymentRequest }>({
+      query: ({ projectId, data }) => ({
+        url: `compute/projects/${projectId}/deployments`,
         method: 'POST',
-        body,
+        body: data,
       }),
-      invalidatesTags: ['Deployment'],
+      invalidatesTags: (_result, _error, { projectId }) => [{ type: 'Deployment', projectId }, 'Deployment'],
     }),
-    updateDeployment: builder.mutation<Deployment, { id: string; data: UpdateDeploymentRequest }>({
-      query: ({ id, data }) => ({
-        url: `compute/deployment/${id}`,
+    updateDeployment: builder.mutation<Deployment, { projectId: string; deploymentId: string; data: UpdateDeploymentRequest }>({
+      query: ({ projectId, deploymentId, data }) => ({
+        url: `compute/projects/${projectId}/deployments/${deploymentId}`,
         method: 'PATCH',
         body: data,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Deployment', id }, 'Deployment'],
+      invalidatesTags: (_result, _error, { projectId, deploymentId }) => [{ type: 'Deployment', projectId, deploymentId }, 'Deployment'],
     }),
-    deleteDeployment: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `compute/deployment/${id}`,
+    deleteDeployment: builder.mutation<void, { projectId: string; deploymentId: string }>({
+      query: ({ projectId, deploymentId }) => ({
+        url: `compute/projects/${projectId}/deployments/${deploymentId}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Deployment'],

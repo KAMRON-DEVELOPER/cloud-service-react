@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FolderKanban, Server, Database, Settings, LogOut, ChevronsUpDown, CreditCard, UserCircle } from 'lucide-react';
+import { LayoutDashboard, Rocket, Database, Settings, LogOut, ChevronsUpDown, CreditCard, UserCircle } from 'lucide-react';
 import { useLogoutMutation } from '@/services/auth';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
@@ -16,6 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
+  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
 import {
@@ -28,6 +29,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import PoddleSvg from '@/assets/icons/PoddleSvg';
+import { Separator } from '@/components/ui/separator';
 
 interface NavItem {
   name: string;
@@ -54,12 +56,7 @@ const DashboardLayout = () => {
     {
       name: 'Projects',
       path: '/projects',
-      icon: <FolderKanban className='w-4 h-4' />,
-    },
-    {
-      name: 'Deployments',
-      path: '/deployments',
-      icon: <Server className='w-4 h-4' />,
+      icon: <Rocket className='w-4 h-4' />,
     },
     {
       name: 'Databases',
@@ -102,55 +99,75 @@ const DashboardLayout = () => {
 
   return (
     <SidebarProvider>
-      <div className='flex min-h-screen w-full'>
-        <Sidebar variant='sidebar'>
-          {/* Sidebar Header */}
-          <SidebarHeader>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <ToggleTrigger />
-                <Link
-                  to='/dashboard'
-                  className='flex items-center gap-2 px-2 py-2'>
-                  <span className='text-xl font-bold'>Poddle</span>
-                </Link>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarHeader>
+      <Sidebar variant='sidebar'>
+        {/* Sidebar Header */}
+        <SidebarHeader>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <ToggleTrigger />
+              <Link
+                to='/dashboard'
+                className='flex items-center gap-2 px-2 py-2'>
+                <span className='text-xl font-bold'>Poddle</span>
+              </Link>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarHeader>
 
-          {/* Sidebar Content */}
-          <SidebarContent>
-            <SidebarGroup>
-              <SidebarGroupLabel>Navigation</SidebarGroupLabel>
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {navItems.map((item) => (
-                    <SidebarMenuItem key={item.path}>
-                      <SidebarMenuButton
-                        asChild
-                        isActive={isActivePath(item.path)}
-                        tooltip={item.name}>
-                        <Link to={item.path}>
-                          {item.icon}
-                          <span>{item.name}</span>
-                        </Link>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  ))}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          </SidebarContent>
-
-          {/* Sidebar Footer */}
-          <SidebarFooter>
-            <SidebarMenu>
-              <SidebarMenuItem>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
+        {/* Sidebar Content */}
+        <SidebarContent>
+          <SidebarGroup>
+            <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {navItems.map((item) => (
+                  <SidebarMenuItem key={item.path}>
                     <SidebarMenuButton
-                      size='lg'
-                      className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
+                      asChild
+                      isActive={isActivePath(item.path)}
+                      tooltip={item.name}>
+                      <Link to={item.path}>
+                        {item.icon}
+                        <span>{item.name}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+
+        {/* Sidebar Footer */}
+        <SidebarFooter>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <SidebarMenuButton
+                    size='lg'
+                    className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
+                    <Avatar className='h-8 w-8 rounded-lg'>
+                      <AvatarImage
+                        src={user?.picture || ''}
+                        alt={user?.username}
+                      />
+                      <AvatarFallback className='rounded-lg bg-blue-600 text-white'>{getUserInitials()}</AvatarFallback>
+                    </Avatar>
+                    <div className='grid flex-1 text-left text-sm leading-tight'>
+                      <span className='truncate font-semibold'>{user?.username || 'User'}</span>
+                      <span className='truncate text-xs text-muted-foreground'>{formatBalance(balance)}</span>
+                    </div>
+                    <ChevronsUpDown className='ml-auto size-4' />
+                  </SidebarMenuButton>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
+                  side='bottom'
+                  align='end'
+                  sideOffset={4}>
+                  <DropdownMenuLabel className='p-0 font-normal'>
+                    <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
                       <Avatar className='h-8 w-8 rounded-lg'>
                         <AvatarImage
                           src={user?.picture || ''}
@@ -160,66 +177,51 @@ const DashboardLayout = () => {
                       </Avatar>
                       <div className='grid flex-1 text-left text-sm leading-tight'>
                         <span className='truncate font-semibold'>{user?.username || 'User'}</span>
-                        <span className='truncate text-xs text-muted-foreground'>{formatBalance(balance)}</span>
+                        <span className='truncate text-xs text-muted-foreground'>{user?.email || ''}</span>
                       </div>
-                      <ChevronsUpDown className='ml-auto size-4' />
-                    </SidebarMenuButton>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
-                    side='bottom'
-                    align='end'
-                    sideOffset={4}>
-                    <DropdownMenuLabel className='p-0 font-normal'>
-                      <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
-                        <Avatar className='h-8 w-8 rounded-lg'>
-                          <AvatarImage
-                            src={user?.picture || ''}
-                            alt={user?.username}
-                          />
-                          <AvatarFallback className='rounded-lg bg-blue-600 text-white'>{getUserInitials()}</AvatarFallback>
-                        </Avatar>
-                        <div className='grid flex-1 text-left text-sm leading-tight'>
-                          <span className='truncate font-semibold'>{user?.username || 'User'}</span>
-                          <span className='truncate text-xs text-muted-foreground'>{user?.email || ''}</span>
-                        </div>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate('/profile')}>
-                      <UserCircle className='w-4 h-4 mr-2' />
-                      Account
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/billing')}>
-                      <CreditCard className='w-4 h-4 mr-2' />
-                      Billing
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate('/settings')}>
-                      <Settings className='w-4 h-4 mr-2' />
-                      Settings
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
-                      <LogOut className='w-4 h-4 mr-2' />
-                      Log out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </SidebarMenuItem>
-            </SidebarMenu>
-          </SidebarFooter>
-        </Sidebar>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <UserCircle className='w-4 h-4 mr-2' />
+                    Account
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/billing')}>
+                    <CreditCard className='w-4 h-4 mr-2' />
+                    Billing
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/settings')}>
+                    <Settings className='w-4 h-4 mr-2' />
+                    Settings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout}>
+                    <LogOut className='w-4 h-4 mr-2' />
+                    Log out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarFooter>
+      </Sidebar>
 
-        {/* Main Content */}
-        <SidebarInset>
-          <div className='flex-1 flex flex-col overflow-hidden'>
-            {/* Page Content */}
-            <main className='flex-1 overflow-y-auto p-6'>
-              <Outlet />
-            </main>
-          </div>
-        </SidebarInset>
-      </div>
+      {/* Main Content */}
+      <SidebarInset>
+        <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>
+          <SidebarTrigger className='-ml-1' />
+          <Separator
+            orientation='vertical'
+            className='mr-2 data-[orientation=vertical]:h-4'
+          />
+        </header>
+        <div className='flex-1 flex flex-col overflow-hidden'>
+          {/* Page Content */}
+          <main className='flex-1 overflow-y-auto p-6'>
+            <Outlet />
+          </main>
+        </div>
+      </SidebarInset>
     </SidebarProvider>
   );
 };
