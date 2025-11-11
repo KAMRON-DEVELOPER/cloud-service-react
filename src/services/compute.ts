@@ -13,7 +13,7 @@ import type {
 export const computeApi = api.injectEndpoints({
   endpoints: (builder) => ({
     // Projects
-    getProjects: builder.query<{ projects: Project[]; total: number }, void>({
+    getProjects: builder.query<{ data: Project[]; total: number }, void>({
       query: () => ({
         url: `compute/projects`,
       }),

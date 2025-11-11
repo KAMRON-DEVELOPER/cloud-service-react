@@ -11,7 +11,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -133,7 +132,7 @@ const DashboardLayout = () => {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        {projectsData?.projects.map((project) => (
+                        {projectsData?.data.map((project) => (
                           <SidebarMenuSubItem key={project.id}>
                             <SidebarMenuSubButton
                               asChild
