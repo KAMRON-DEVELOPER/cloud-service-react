@@ -159,12 +159,14 @@ const Footer = () => {
     }
   };
 
+  console.log(`Footer is rendering, user is ${user}, balance is ${balance}`);
+
   if (userLoading || balanceLoading) {
     return <div className='p-4'>Loading...</div>;
   }
 
   if (!user || !balance) {
-    return null;
+    return <p>user or balance is null...</p>;
   }
 
   const getUserInitials = () => {

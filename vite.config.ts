@@ -21,24 +21,37 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api/v1/users': {
+      '/api/v1/auth': {
         target: 'http://localhost:8001',
         changeOrigin: true,
         secure: false,
         ws: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/users/, '/api/v1'),
+        rewrite: (path) => path.replace(/^\/api\/v1\/auth/, '/api/v1'),
       },
-      '/api/v1/compute': {
+      '/api/v1/profile': {
+        target: 'http://localhost:8001',
+        changeOrigin: true,
+        secure: false,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/api\/v1\/profile/, '/api/v1'),
+      },
+      '/api/v1/projects': {
         target: 'http://localhost:8002',
         changeOrigin: true,
         secure: false,
-        rewrite: (path) => path.replace(/^\/api\/v1\/compute/, '/api/v1'),
+        rewrite: (path) => path.replace(/^\/api\/v1\/projects/, '/api/v1'),
       },
-      '/api/v1/billing': {
+      '/api/v1/balance': {
         target: 'http://localhost:8003',
         changeOrigin: true,
         ws: true,
-        rewrite: (path) => path.replace(/^\/api\/v1\/billing/, '/api/v1'),
+        rewrite: (path) => path.replace(/^\/api\/v1\/balance/, '/api/v1'),
+      },
+      '/api/v1/transactions': {
+        target: 'http://localhost:8003',
+        changeOrigin: true,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/api\/v1\/transactions/, '/api/v1'),
       },
     },
   },
