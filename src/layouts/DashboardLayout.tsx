@@ -1,16 +1,18 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FolderKanban, Settings, LogOut, ChevronsUpDown, ChevronRight, Rocket } from 'lucide-react';
+import { Settings, ChevronRight, Rocket } from 'lucide-react';
 import { useLogoutMutation } from '@/services/auth';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
 import { useGetProjectsQuery } from '@/services/compute';
-import { useState } from 'react';
+import { LuLayoutDashboard } from 'react-icons/lu';
+import { useState, type ComponentProps } from 'react';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarInset,
   SidebarMenu,
@@ -20,34 +22,140 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarProvider,
-  SidebarTrigger,
+  SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import PoddleSvg from '@/assets/icons/PoddleSvg';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import PoddleSvg from '@/assets/icons/PoddleSvg';
+
+const Header = () => {
+  const { toggleSidebar } = useSidebar();
+
+  return (
+    <SidebarMenu onClick={toggleSidebar}>
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          size='lg'
+          className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
+          <div className='flex aspect-square size-8 items-center justify-center'>
+            <PoddleSvg className='size-6 text-primary' />
+          </div>
+          <div className='grid flex-1 text-left text-sm leading-tight'>
+            <span className='truncate font-medium text-primary'>Poddle</span>
+            <span className='truncate text-xs text-secondary'>Cloud Platform</span>
+          </div>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
+};
+
+const Content = () => {
+  const location = useLocation();
+  const [projectsOpen, setProjectsOpen] = useState(true);
+
+  const { data: projectsData } = useGetProjectsQuery();
+
+  const isActivePath = (path: string) => {
+    return location.pathname === path || location.pathname.startsWith(path + '/');
+  };
+
+  return (
+    <SidebarGroup>
+      <SidebarGroupLabel>Platform</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {/* Dashboard */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActivePath('/dashboard')}
+              tooltip='Dashboard'>
+              <Link to='/dashboard'>
+                <LuLayoutDashboard className='size-4' />
+                <span>Dashboard</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <Collapsible
+            asChild
+            defaultOpen={true}
+            className='group/collapsible'>
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton
+                  tooltip='Projects'
+                  isActive={isActivePath('/projects') || isActivePath('/project/')}>
+                  <Rocket className='size-4' />
+                  <span>Projects</span>
+                  <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {projectsData?.data.map((project) => (
+                    <SidebarMenuSubItem key={project.id}>
+                      <SidebarMenuSubButton
+                        asChild
+                        isActive={location.pathname === `/project/${project.id}`}>
+                        <Link to={`/project/${project.id}`}>
+                          <span>{project.name}</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+
+          {/* Settings */}
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActivePath('/settings')}
+              tooltip='Settings'>
+              <Link to='/settings'>
+                <Settings className='w-4 h-4' />
+                <span>Settings</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
+};
+
+const Footer = () => {
+  return <></>;
+};
+
+const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
+  return (
+    <Sidebar {...props}>
+      <SidebarHeader>
+        <Header />
+      </SidebarHeader>
+      <SidebarContent>
+        <Content />
+      </SidebarContent>
+      <SidebarFooter>
+        <Footer />
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
+  );
+};
 
 const DashboardLayout = () => {
-  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
-  const [projectsOpen, setProjectsOpen] = useState(true);
 
-  // Get user data from Redux store
   const user = useAppSelector((state) => state.auth.user);
   const balance = useAppSelector((state) => state.stats?.balance) || 0;
-
-  // Fetch projects
-  const { data: projectsData } = useGetProjectsQuery();
 
   const handleLogout = async () => {
     try {
@@ -57,10 +165,6 @@ const DashboardLayout = () => {
     } catch (error) {
       console.error('Logout failed:', error);
     }
-  };
-
-  const isActivePath = (path: string) => {
-    return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
   const getUserInitials = () => {
@@ -83,151 +187,10 @@ const DashboardLayout = () => {
 
   return (
     <SidebarProvider>
-      <Sidebar
+      <AppSidebar
         variant='sidebar'
-        collapsible='icon'>
-        {/* Sidebar Header - Brand with toggle functionality */}
-        <SidebarHeader>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                size='lg'
-                asChild>
-                <BrandTrigger />
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-
-        {/* Sidebar Content */}
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {/* Dashboard */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActivePath('/dashboard')}
-                    tooltip='Dashboard'>
-                    <Link to='/dashboard'>
-                      <LayoutDashboard className='w-4 h-4' />
-                      <span>Dashboard</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-
-                {/* Projects - Collapsible */}
-                <Collapsible
-                  open={projectsOpen}
-                  onOpenChange={setProjectsOpen}
-                  className='group/collapsible'>
-                  <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuButton
-                        tooltip='Projects'
-                        isActive={isActivePath('/projects') || isActivePath('/project/')}>
-                        <FolderKanban className='w-4 h-4' />
-                        <span>Projects</span>
-                        <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {projectsData?.data.map((project) => (
-                          <SidebarMenuSubItem key={project.id}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={location.pathname === `/project/${project.id}`}>
-                              <Link to={`/project/${project.id}`}>
-                                <span>{project.name}</span>
-                              </Link>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </SidebarMenuItem>
-                </Collapsible>
-
-                {/* Settings */}
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isActivePath('/settings')}
-                    tooltip='Settings'>
-                    <Link to='/settings'>
-                      <Settings className='w-4 h-4' />
-                      <span>Settings</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        </SidebarContent>
-
-        {/* Sidebar Footer - User profile with balance */}
-        <SidebarFooter>
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton
-                    size='lg'
-                    className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
-                    <Avatar className='h-8 w-8 rounded-lg'>
-                      <AvatarImage
-                        src={user?.picture || ''}
-                        alt={user?.username}
-                      />
-                      <AvatarFallback className='rounded-lg bg-blue-600 text-white'>{getUserInitials()}</AvatarFallback>
-                    </Avatar>
-                    <div className='grid flex-1 text-left text-sm leading-tight'>
-                      <span className='truncate font-semibold'>{user?.username || 'User'}</span>
-                      <span className='truncate text-xs text-muted-foreground'>{formatBalance(balance)}</span>
-                    </div>
-                    <ChevronsUpDown className='ml-auto size-4' />
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
-                  side='right'
-                  align='end'
-                  sideOffset={4}>
-                  <DropdownMenuLabel className='p-0 font-normal'>
-                    <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
-                      <Avatar className='h-8 w-8 rounded-lg'>
-                        <AvatarImage
-                          src={user?.picture || ''}
-                          alt={user?.username}
-                        />
-                        <AvatarFallback className='rounded-lg bg-blue-600 text-white'>{getUserInitials()}</AvatarFallback>
-                      </Avatar>
-                      <div className='grid flex-1 text-left text-sm leading-tight'>
-                        <span className='truncate font-semibold'>{user?.username || 'User'}</span>
-                        <span className='truncate text-xs text-muted-foreground'>{user?.email || ''}</span>
-                      </div>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/settings')}>
-                    <Settings className='w-4 h-4 mr-2' />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className='w-4 h-4 mr-2' />
-                    Log out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      </Sidebar>
-
-      {/* Main Content */}
+        collapsible='icon'
+      />
       <SidebarInset>
         {/* Empty header without breadcrumbs and trigger */}
         <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>{/* Empty - just spacing */}</header>
@@ -243,29 +206,3 @@ const DashboardLayout = () => {
 };
 
 export default DashboardLayout;
-
-const BrandTrigger = () => {
-  const { toggleSidebar } = useSidebar();
-
-  return (
-    <SidebarHeader onClick={toggleSidebar}>
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            size='lg'
-            className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
-            {/* <PoddleSvg className='aspect-square size-8 text-primary' /> */}
-            <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
-              <Rocket className='size-4' />
-            </div>
-            <div className='grid flex-1 text-left text-sm leading-tight'>
-              <span className='truncate font-medium'>Poddle</span>
-              <span className='truncate text-xs'>Cloud Platform(Beta)</span>
-            </div>
-            <ChevronsUpDown className='ml-auto' />
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </SidebarMenu>
-    </SidebarHeader>
-  );
-};
