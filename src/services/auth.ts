@@ -1,20 +1,12 @@
-import type {
-  CompleteProfileResponse,
-  ContinueWithEmailResponse,
-  GetOAuthUserResponse,
-  GetUserResponse,
-  RefreshTokenResponse,
-  UpdateUserResponse,
-  User,
-} from '@/features/types';
+import type { OAuthUser, Tokens, User } from '@/features/types';
 import { api } from '@/services/api';
 
 export const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    getProfile: builder.query<GetUserResponse, void>({
+    getProfile: builder.query<User, void>({
       query: () => 'users/profile',
     }),
-    updateProfile: builder.mutation<UpdateUserResponse, User>({
+    updateProfile: builder.mutation<User, User>({
       query: (body) => ({ url: 'users/profile', method: 'PATCH', body: body }),
       invalidatesTags: ['Auth'],
     }),
@@ -22,7 +14,7 @@ export const authApi = api.injectEndpoints({
       query: () => ({ url: 'users/profile', method: 'DELETE' }),
       invalidatesTags: ['Auth'],
     }),
-    continueWithEmail: builder.mutation<ContinueWithEmailResponse, { email: string; password: string }>({
+    continueWithEmail: builder.mutation<User, { email: string; password: string }>({
       query: (body) => ({
         url: 'users/auth/email',
         method: 'POST',
@@ -30,11 +22,11 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Auth'],
     }),
-    getOAuthUser: builder.query<GetOAuthUserResponse, void>({
+    getOAuthUser: builder.query<OAuthUser, void>({
       query: () => '/auth/user',
       providesTags: ['Auth'],
     }),
-    completeProfile: builder.mutation<CompleteProfileResponse, FormData>({
+    completeProfile: builder.mutation<User, FormData>({
       query: (body) => ({
         url: 'users/auth/complete',
         method: 'PATCH',
@@ -42,7 +34,7 @@ export const authApi = api.injectEndpoints({
       }),
       invalidatesTags: ['Auth'],
     }),
-    refreshToken: builder.mutation<RefreshTokenResponse, void>({
+    refreshToken: builder.mutation<Tokens, void>({
       query: () => ({
         url: 'users/auth/refresh',
         method: 'POST',

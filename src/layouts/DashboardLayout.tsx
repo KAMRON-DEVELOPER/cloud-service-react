@@ -1,11 +1,11 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Settings, ChevronRight, Rocket } from 'lucide-react';
-import { useLogoutMutation } from '@/services/auth';
-import { useAppDispatch, useAppSelector } from '@/store/store';
+import { Settings, ChevronRight, Rocket, LogOut, CreditCard, BadgeCheck, ChevronsUpDown } from 'lucide-react';
+import { useGetProfileQuery, useLogoutMutation } from '@/services/auth';
+import { useAppDispatch } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
 import { useGetProjectsQuery } from '@/services/compute';
 import { LuLayoutDashboard } from 'react-icons/lu';
-import { useState, type ComponentProps } from 'react';
+import { type ComponentProps } from 'react';
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +27,17 @@ import {
 } from '@/components/ui/sidebar';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import PoddleSvg from '@/assets/icons/PoddleSvg';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useGetBalanceQuery } from '@/services/billing';
 
 const Header = () => {
   const { toggleSidebar } = useSidebar();
@@ -52,11 +63,12 @@ const Header = () => {
 
 const Content = () => {
   const location = useLocation();
-  const [projectsOpen, setProjectsOpen] = useState(true);
+  // const [projectsOpen, setProjectsOpen] = useState(true);
 
-  const { data: projectsData } = useGetProjectsQuery();
+  const { data: projects } = useGetProjectsQuery();
 
   const isActivePath = (path: string) => {
+    console.log(location.pathname);
     return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
@@ -94,7 +106,7 @@ const Content = () => {
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {projectsData?.data.map((project) => (
+                  {projects?.data.map((project) => (
                     <SidebarMenuSubItem key={project.id}>
                       <SidebarMenuSubButton
                         asChild
@@ -129,7 +141,117 @@ const Content = () => {
 };
 
 const Footer = () => {
-  return <></>;
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [logout] = useLogoutMutation();
+  const { isMobile } = useSidebar();
+
+  const { data: user, isLoading: userLoading } = useGetProfileQuery();
+  const { data: balance, isLoading: balanceLoading } = useGetBalanceQuery();
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap();
+      dispatch(logoutAction());
+      navigate('/');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  if (userLoading || balanceLoading) {
+    return <div className='p-4'>Loading...</div>;
+  }
+
+  if (!user || !balance) {
+    return null;
+  }
+
+  const getUserInitials = () => {
+    if (!user?.username) return 'U';
+    return user.username
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const formatBalance = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    }).format(amount);
+  };
+
+  return (
+    <SidebarMenu>
+      <SidebarMenuItem>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <SidebarMenuButton
+              size='lg'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
+              <Avatar className='h-8 w-8 rounded-lg'>
+                <AvatarImage
+                  src={user?.picture || undefined}
+                  alt={user.username}
+                />
+                <AvatarFallback className='rounded-lg'>{getUserInitials()}</AvatarFallback>
+              </Avatar>
+              <div className='grid flex-1 text-left text-sm leading-tight'>
+                <span className='truncate font-medium'>{user.username}</span>
+                <span className='truncate text-xs'>{formatBalance(Number(balance.amount))}</span>
+              </div>
+              <ChevronsUpDown className='ml-auto size-4' />
+            </SidebarMenuButton>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
+            side={isMobile ? 'bottom' : 'right'}
+            align='end'
+            sideOffset={4}>
+            <DropdownMenuLabel className='p-0 font-normal'>
+              <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
+                <Avatar className='h-8 w-8 rounded-lg'>
+                  <AvatarImage
+                    src={user.picture || undefined}
+                    alt={user.username}
+                  />
+                  <AvatarFallback className='rounded-lg'>CN</AvatarFallback>
+                </Avatar>
+                <div className='grid flex-1 text-left text-sm leading-tight'>
+                  <span className='truncate font-medium'>{user.username}</span>
+                  <span className='truncate text-xs'>{formatBalance(Number(balance.amount))}</span>
+                </div>
+              </div>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              <DropdownMenuItem>
+                <BadgeCheck />
+                Account
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <CreditCard />
+                Billing
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Settings />
+                Settings
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut />
+              Log out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarMenuItem>
+    </SidebarMenu>
+  );
 };
 
 const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
@@ -150,41 +272,6 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
 };
 
 const DashboardLayout = () => {
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const [logout] = useLogoutMutation();
-
-  const user = useAppSelector((state) => state.auth.user);
-  const balance = useAppSelector((state) => state.stats?.balance) || 0;
-
-  const handleLogout = async () => {
-    try {
-      await logout().unwrap();
-      dispatch(logoutAction());
-      navigate('/');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
-
-  const getUserInitials = () => {
-    if (!user?.username) return 'U';
-    return user.username
-      .split(' ')
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const formatBalance = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-    }).format(amount);
-  };
-
   return (
     <SidebarProvider>
       <AppSidebar

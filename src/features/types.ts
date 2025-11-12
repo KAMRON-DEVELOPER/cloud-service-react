@@ -56,16 +56,16 @@ export interface ErrorResponse {
   error: string;
 }
 
-export type ApiResponseWithRedirect<T> = T | ErrorResponse | RedirectResponse;
-export type ApiResponse<T> = T | ErrorResponse;
+// export type ApiResponseWithRedirect<T> = T | ErrorResponse | RedirectResponse;
+// export type ApiResponse<T> = T | ErrorResponse;
 
-export type GetUserResponse = ApiResponseWithRedirect<User>;
-export type UpdateUserResponse = User | ErrorResponse;
-export type DeleteUserResponse = User | ErrorResponse;
-export type GetOAuthUserResponse = OAuthUser | ErrorResponse | RedirectResponse;
-export type ContinueWithEmailResponse = AuthResponse | ErrorResponse | RedirectResponse;
-export type CompleteProfileResponse = AuthResponse | ErrorResponse;
-export type RefreshTokenResponse = Tokens | ErrorResponse;
+// export type GetUserResponse = ApiResponse<User>;
+// export type UpdateUserResponse = User | ErrorResponse;
+// export type DeleteUserResponse = User | ErrorResponse;
+// export type GetOAuthUserResponse = OAuthUser | ErrorResponse | RedirectResponse;
+// export type ContinueWithEmailResponse = AuthResponse | ErrorResponse | RedirectResponse;
+// export type CompleteProfileResponse = AuthResponse | ErrorResponse;
+// export type RefreshTokenResponse = Tokens | ErrorResponse;
 
 // ------------------------------------------------
 // ------------- PROJECTS -------------------------
