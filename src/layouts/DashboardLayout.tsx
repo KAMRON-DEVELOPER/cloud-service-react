@@ -38,6 +38,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useGetBalanceQuery } from '@/services/billing';
+import { PlusIcon } from '@heroicons/react/24/solid';
 
 const Header = () => {
   const { toggleSidebar } = useSidebar();
@@ -68,7 +69,6 @@ const Content = () => {
   const { data: projects } = useGetProjectsQuery();
 
   const isActivePath = (path: string) => {
-    console.log(location.pathname);
     return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
@@ -104,8 +104,20 @@ const Content = () => {
                   <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
+              {/* start */}
               <CollapsibleContent>
                 <SidebarMenuSub>
+                  {/* Add Project Button */}
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <Link to='/projects/new'>
+                        <PlusIcon className='size-4' />
+                        <span>Add Project</span>
+                      </Link>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+
+                  {/* Existing Projects */}
                   {projects?.data.map((project) => (
                     <SidebarMenuSubItem key={project.id}>
                       <SidebarMenuSubButton
@@ -119,6 +131,22 @@ const Content = () => {
                   ))}
                 </SidebarMenuSub>
               </CollapsibleContent>
+              {/* end */}
+              {/* <CollapsibleContent>
+                <SidebarMenuSub>
+                  {projects?.data.map((project) => (
+                    <SidebarMenuSubItem key={project.id}>
+                      <SidebarMenuSubButton
+                        asChild
+                        isActive={location.pathname === `/project/${project.id}`}>
+                        <Link to={`/project/${project.id}`}>
+                          <span>{project.name}</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent> */}
             </SidebarMenuItem>
           </Collapsible>
 
@@ -158,8 +186,6 @@ const Footer = () => {
       console.error('Logout failed:', error);
     }
   };
-
-  console.log(`Footer is rendering, user is ${user}, balance is ${balance}`);
 
   if (userLoading || balanceLoading) {
     return <div className='p-4'>Loading...</div>;
