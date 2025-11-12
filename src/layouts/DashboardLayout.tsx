@@ -99,7 +99,7 @@ const Content = () => {
               <CollapsibleTrigger asChild>
                 <SidebarMenuButton
                   tooltip='Projects'
-                  isActive={isActivePath('/projects') || isActivePath('/project/')}>
+                  isActive={isActivePath('/projects') || isActivePath('/projects/')}>
                   <Rocket className='size-4' />
                   <span>Projects</span>
                   <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
@@ -126,8 +126,8 @@ const Content = () => {
                     <SidebarMenuSubItem key={project.id}>
                       <SidebarMenuSubButton
                         asChild
-                        isActive={location.pathname === `/project/${project.id}`}>
-                        <Link to={`/project/${project.id}`}>
+                        isActive={location.pathname === `/projects/${project.id}`}>
+                        <Link to={`/projects/${project.id}`}>
                           <span>{project.name}</span>
                         </Link>
                       </SidebarMenuSubButton>
