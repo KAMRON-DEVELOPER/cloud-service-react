@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Settings, ChevronRight, Rocket, LogOut, CreditCard, BadgeCheck, ChevronsUpDown } from 'lucide-react';
+import { Settings, ChevronRight, Rocket, LogOut, CreditCard, BadgeCheck, ChevronsUpDown, type LucideIcon, LifeBuoy, Send } from 'lucide-react';
 import { useGetProfileQuery, useLogoutMutation } from '@/services/auth';
 import { useAppDispatch } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
@@ -39,6 +39,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useGetBalanceQuery } from '@/services/billing';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import CreateProjectDialog from '@/features/compute/CreateProjectDialog';
 
 const Header = () => {
   const { toggleSidebar } = useSidebar();
@@ -104,16 +105,19 @@ const Content = () => {
                   <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              {/* start */}
               <CollapsibleContent>
                 <SidebarMenuSub>
                   {/* Add Project Button */}
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild>
-                      <Link to='/projects/new'>
-                        <PlusIcon className='size-4' />
-                        <span>Add Project</span>
-                      </Link>
+                      <CreateProjectDialog
+                        trigger={
+                          <SidebarMenuSubButton>
+                            <PlusIcon className='size-4' />
+                            <span>Add Project</span>
+                          </SidebarMenuSubButton>
+                        }
+                      />
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
 
@@ -131,22 +135,6 @@ const Content = () => {
                   ))}
                 </SidebarMenuSub>
               </CollapsibleContent>
-              {/* end */}
-              {/* <CollapsibleContent>
-                <SidebarMenuSub>
-                  {projects?.data.map((project) => (
-                    <SidebarMenuSubItem key={project.id}>
-                      <SidebarMenuSubButton
-                        asChild
-                        isActive={location.pathname === `/project/${project.id}`}>
-                        <Link to={`/project/${project.id}`}>
-                          <span>{project.name}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent> */}
             </SidebarMenuItem>
           </Collapsible>
 
@@ -167,6 +155,38 @@ const Content = () => {
     </SidebarGroup>
   );
 };
+
+export function ContentFooter({
+  items,
+  ...props
+}: {
+  items: {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+  }[];
+} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+  return (
+    <SidebarGroup {...props}>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {items.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton
+                asChild
+                size='sm'>
+                <a href={item.url}>
+                  <item.icon />
+                  <span>{item.title}</span>
+                </a>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
+    </SidebarGroup>
+  );
+}
 
 const Footer = () => {
   const navigate = useNavigate();
@@ -290,6 +310,21 @@ const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
       </SidebarHeader>
       <SidebarContent>
         <Content />
+        <ContentFooter
+          items={[
+            {
+              title: 'Support',
+              url: '#',
+              icon: LifeBuoy,
+            },
+            {
+              title: 'Feedback',
+              url: '#',
+              icon: Send,
+            },
+          ]}
+          className='mt-auto'
+        />
       </SidebarContent>
       <SidebarFooter>
         <Footer />

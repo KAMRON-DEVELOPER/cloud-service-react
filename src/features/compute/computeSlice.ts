@@ -1,15 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { Listing } from '../types';
+import type { Project } from '../types';
 
-interface ListingState {
-  listings: Listing[];
+interface computeState {
+  projects: Project[];
 }
 
-const initialState: ListingState = {
-  listings: [],
+const initialState: computeState = {
+  projects: [],
 };
 
-export const listingsSlice = createSlice({
+export const computeSlice = createSlice({
   name: 'compute',
   initialState,
   reducers: {},
