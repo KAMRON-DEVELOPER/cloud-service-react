@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, FolderKanban, Settings, LogOut, ChevronsUpDown, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, FolderKanban, Settings, LogOut, ChevronsUpDown, ChevronRight, Rocket } from 'lucide-react';
 import { useLogoutMutation } from '@/services/auth';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
@@ -20,6 +20,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarProvider,
+  SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
 import {
@@ -82,15 +83,16 @@ const DashboardLayout = () => {
 
   return (
     <SidebarProvider>
-      <Sidebar variant='sidebar'>
+      <Sidebar
+        variant='sidebar'
+        collapsible='icon'>
         {/* Sidebar Header - Brand with toggle functionality */}
         <SidebarHeader>
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
                 size='lg'
-                asChild
-                className='hover:bg-sidebar-accent cursor-pointer'>
+                asChild>
                 <BrandTrigger />
               </SidebarMenuButton>
             </SidebarMenuItem>
@@ -190,7 +192,7 @@ const DashboardLayout = () => {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg'
-                  side='bottom'
+                  side='right'
                   align='end'
                   sideOffset={4}>
                   <DropdownMenuLabel className='p-0 font-normal'>
@@ -242,19 +244,28 @@ const DashboardLayout = () => {
 
 export default DashboardLayout;
 
-// Brand trigger component that acts as sidebar toggle
 const BrandTrigger = () => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <div
-      onClick={toggleSidebar}
-      className='flex items-center gap-2 w-full'>
-      <PoddleSvg className='w-8 h-8 text-primary' />
-      <div className='flex flex-col gap-0.5'>
-        <span className='text-lg font-bold'>Poddle</span>
-        <span className='text-xs text-muted-foreground'>Cloud Platform</span>
-      </div>
-    </div>
+    <SidebarHeader onClick={toggleSidebar}>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            size='lg'
+            className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'>
+            {/* <PoddleSvg className='aspect-square size-8 text-primary' /> */}
+            <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
+              <Rocket className='size-4' />
+            </div>
+            <div className='grid flex-1 text-left text-sm leading-tight'>
+              <span className='truncate font-medium'>Poddle</span>
+              <span className='truncate text-xs'>Cloud Platform(Beta)</span>
+            </div>
+            <ChevronsUpDown className='ml-auto' />
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarHeader>
   );
 };
