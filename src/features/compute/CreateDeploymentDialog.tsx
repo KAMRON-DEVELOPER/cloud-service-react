@@ -76,7 +76,7 @@ export const CreateDeploymentDialog = ({ onCreateDeployment }: CreateDeploymentD
       open={open}
       onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className='bg-gradient-primary hover:shadow-glow transition-all'>
+        <Button className='bg-gradient-primary hover:shadow-glow transition-all bg-primary'>
           <Plus className='h-4 w-4 mr-2' />
           New Deployment
         </Button>

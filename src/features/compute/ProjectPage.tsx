@@ -6,6 +6,7 @@ import { DeploymentCard } from './DeploymentCard';
 import { DashboardHeader } from './DashboardHeader';
 import { useGetDeploymentsQuery, useGetProjectQuery, useUpdateProjectMutation } from '@/services/compute';
 import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const ProjectPage = () => {
   const navigate = useNavigate();
@@ -21,16 +22,29 @@ const ProjectPage = () => {
 
   const { data: deployments, error: deploymentsError, isLoading: isDeploymentsLoading } = useGetDeploymentsQuery(projectId!, { skip: !projectId });
 
-  const [updateProject] = useUpdateProjectMutation();
+  const [updateProject, { isLoading: updateProjectIsLoading }] = useUpdateProjectMutation();
 
   // Project name update handler
   const handleProjectNameUpdate = async (name: string) => {
     if (!projectId) return;
+
     try {
       await updateProject({ projectId, data: { name } }).unwrap();
-    } catch (err) {
+      toast.success('Project name updated successfully');
+    } catch (err: any) {
       console.error('Failed to update project name:', err);
-      alert('Failed to update project name. Please try again.');
+
+      // Extract error message
+      let errorMessage = 'Failed to update project name';
+      if (err?.data?.message) {
+        errorMessage = err.data.message;
+      } else if (err?.data?.detail) {
+        errorMessage = err.data.detail;
+      } else if (err?.message) {
+        errorMessage = err.message;
+      }
+
+      toast.error(errorMessage);
     }
   };
 
@@ -93,11 +107,12 @@ const ProjectPage = () => {
 
   // Normal render
   return (
-    <div className='min-h-screen bg-background'>
+    <div className='min-h-screen bg-primary'>
       <div className='group'>
         <DashboardHeader
           projectName={project.name}
           onProjectNameUpdate={handleProjectNameUpdate}
+          isUpdating={updateProjectIsLoading}
         />
       </div>
 
@@ -111,7 +126,7 @@ const ProjectPage = () => {
         <div className='space-y-4'>
           <div className='flex items-center justify-between'>
             <div>
-              <h2 className='text-2xl font-bold'>Deployments</h2>
+              <h2 className='text-2xl font-bold text-primary'>Deployments</h2>
               <p className='text-sm text-muted-foreground'>Manage your containerized applications</p>
             </div>
             <CreateDeploymentDialog onCreateDeployment={handleCreateDeployment} />
@@ -123,7 +138,6 @@ const ProjectPage = () => {
                 <Container className='h-12 w-12 text-muted-foreground mb-4' />
                 <h3 className='text-lg font-semibold mb-1'>No deployments yet</h3>
                 <p className='text-sm text-muted-foreground mb-4'>Create your first deployment to get started</p>
-                <CreateDeploymentDialog onCreateDeployment={handleCreateDeployment} />
               </CardContent>
             </Card>
           ) : (

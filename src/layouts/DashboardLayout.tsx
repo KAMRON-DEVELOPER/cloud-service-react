@@ -41,11 +41,13 @@ import { useGetBalanceQuery } from '@/services/billing';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import CreateProjectDialog from '@/features/compute/CreateProjectDialog';
 
-const Header = () => {
+const Header = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarMenu>) => {
   const { toggleSidebar } = useSidebar();
 
   return (
-    <SidebarMenu onClick={toggleSidebar}>
+    <SidebarMenu
+      {...props}
+      onClick={toggleSidebar}>
       <SidebarMenuItem>
         <SidebarMenuButton
           size='lg'
@@ -63,7 +65,7 @@ const Header = () => {
   );
 };
 
-const Content = () => {
+const Content = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarGroup>) => {
   const location = useLocation();
   // const [projectsOpen, setProjectsOpen] = useState(true);
 
@@ -74,7 +76,7 @@ const Content = () => {
   };
 
   return (
-    <SidebarGroup>
+    <SidebarGroup {...props}>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
@@ -105,8 +107,20 @@ const Content = () => {
                   <ChevronRight className='ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90' />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              <CollapsibleContent>
+              <CollapsibleContent className='pt-0.5'>
                 <SidebarMenuSub>
+                  {/* Existing Projects */}
+                  {projects?.data.map((project) => (
+                    <SidebarMenuSubItem key={project.id}>
+                      <SidebarMenuSubButton
+                        asChild
+                        isActive={location.pathname === `/projects/${project.id}`}>
+                        <Link to={`/projects/${project.id}`}>
+                          <span>{project.name}</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
                   {/* Add Project Button */}
                   <SidebarMenuSubItem>
                     <SidebarMenuSubButton asChild>
@@ -120,19 +134,6 @@ const Content = () => {
                       />
                     </SidebarMenuSubButton>
                   </SidebarMenuSubItem>
-
-                  {/* Existing Projects */}
-                  {projects?.data.map((project) => (
-                    <SidebarMenuSubItem key={project.id}>
-                      <SidebarMenuSubButton
-                        asChild
-                        isActive={location.pathname === `/projects/${project.id}`}>
-                        <Link to={`/projects/${project.id}`}>
-                          <span>{project.name}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
                 </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>
@@ -156,16 +157,20 @@ const Content = () => {
   );
 };
 
-export function ContentFooter({
-  items,
-  ...props
-}: {
-  items: {
-    title: string;
-    url: string;
-    icon: LucideIcon;
-  }[];
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+const ContentFooter = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarGroup>) => {
+  const items = [
+    {
+      title: 'Support',
+      url: '#',
+      icon: LifeBuoy,
+    },
+    {
+      title: 'Feedback',
+      url: '#',
+      icon: Send,
+    },
+  ];
+
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
@@ -186,9 +191,9 @@ export function ContentFooter({
       </SidebarGroupContent>
     </SidebarGroup>
   );
-}
+};
 
-const Footer = () => {
+const Footer = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarMenu>) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [logout] = useLogoutMutation();
@@ -234,7 +239,7 @@ const Footer = () => {
   };
 
   return (
-    <SidebarMenu>
+    <SidebarMenu {...props}>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -305,28 +310,14 @@ const Footer = () => {
 const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar {...props}>
-      <SidebarHeader>
+      <SidebarHeader className='bg-primary'>
         <Header />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className='bg-primary'>
         <Content />
-        <ContentFooter
-          items={[
-            {
-              title: 'Support',
-              url: '#',
-              icon: LifeBuoy,
-            },
-            {
-              title: 'Feedback',
-              url: '#',
-              icon: Send,
-            },
-          ]}
-          className='mt-auto'
-        />
+        <ContentFooter className='mt-auto' />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className='bg-primary'>
         <Footer />
       </SidebarFooter>
       <SidebarRail />
@@ -340,10 +331,11 @@ const DashboardLayout = () => {
       <AppSidebar
         variant='sidebar'
         collapsible='icon'
+        className='bg-secondary'
       />
-      <SidebarInset>
+      <SidebarInset className='bg-secondary'>
         <div className='flex-1 flex flex-col overflow-hidden'>
-          <main className='flex-1 overflow-y-auto p-6'>
+          <main className='flex-1 overflow-y-auto'>
             <Outlet />
           </main>
         </div>
