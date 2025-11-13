@@ -36,8 +36,8 @@ function App() {
           children: [
             { path: '/dashboard', element: <DashboardPage /> },
             { path: '/projects', element: <ProjectsPage /> },
-            { path: '/projects/:id', element: <ProjectPage /> },
-            { path: '/resource/:id', element: <ResourcePage /> },
+            { path: '/projects/:projectId', element: <ProjectPage /> },
+            { path: '/resource/:projectId', element: <ResourcePage /> },
             { path: '/profile', element: <ProfilePage /> },
             { path: '/settings', element: <SettingsPage /> },
           ],

@@ -342,10 +342,7 @@ const DashboardLayout = () => {
         collapsible='icon'
       />
       <SidebarInset>
-        {/* Empty header without breadcrumbs and trigger */}
-        <header className='flex h-16 shrink-0 items-center gap-2 border-b px-4'>{/* Empty - just spacing */}</header>
         <div className='flex-1 flex flex-col overflow-hidden'>
-          {/* Page Content */}
           <main className='flex-1 overflow-y-auto p-6'>
             <Outlet />
           </main>

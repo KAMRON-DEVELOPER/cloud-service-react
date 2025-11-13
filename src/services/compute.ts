@@ -52,13 +52,13 @@ export const computeApi = api.injectEndpoints({
     // Deployments
     getDeployments: builder.query<{ data: Deployment[]; total: number }, string>({
       query: (projectId) => ({
-        url: `project/${projectId}/deployments`,
+        url: `projects/${projectId}/deployments`,
       }),
       providesTags: ['Deployment'],
     }),
     getDeployment: builder.query<Deployment, { projectId: string; deploymentId: string }>({
       query: ({ projectId, deploymentId }) => ({
-        url: `project/${projectId}/deployments/${deploymentId}`,
+        url: `projects/${projectId}/deployments/${deploymentId}`,
       }),
       providesTags: (_result, _error, deploymentId) => [{ type: 'Deployment', deploymentId }],
     }),

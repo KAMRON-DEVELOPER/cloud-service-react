@@ -13,6 +13,7 @@ export const DashboardHeader = ({ projectName, onProjectNameUpdate }: DashboardH
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(projectName);
   const inputRef = useRef<HTMLInputElement>(null);
+  const spanRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (isEditing && inputRef.current) {
@@ -54,9 +55,18 @@ export const DashboardHeader = ({ projectName, onProjectNameUpdate }: DashboardH
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
                 onKeyDown={handleKeyDown}
-                className='h-9 max-w-md font-semibold text-lg'
-                placeholder='Project name'
+                onBlur={handleSave}
+                className='h-8 font-semibold'
+                style={{
+                  width: spanRef.current ? `${Math.max(spanRef.current.offsetWidth + 40, 200)}px` : '200px',
+                }}
               />
+              <span
+                ref={spanRef}
+                className='absolute invisible whitespace-pre font-semibold'
+                aria-hidden='true'>
+                {editedName}
+              </span>
               <Button
                 size='sm'
                 variant='ghost'
@@ -74,7 +84,11 @@ export const DashboardHeader = ({ projectName, onProjectNameUpdate }: DashboardH
             </>
           ) : (
             <>
-              <h1 className='text-lg font-semibold'>{projectName}</h1>
+              <h1
+                className='text-lg font-semibold'
+                onDoubleClick={() => setIsEditing(true)}>
+                {projectName}
+              </h1>
               <Button
                 size='sm'
                 variant='ghost'
