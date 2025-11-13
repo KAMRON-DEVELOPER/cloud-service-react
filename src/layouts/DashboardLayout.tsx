@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { Settings, ChevronRight, Rocket, LogOut, CreditCard, BadgeCheck, ChevronsUpDown, type LucideIcon, LifeBuoy, Send } from 'lucide-react';
+import { Settings, ChevronRight, Rocket, LogOut, CreditCard, BadgeCheck, ChevronsUpDown, LifeBuoy, Send } from 'lucide-react';
 import { useGetProfileQuery, useLogoutMutation } from '@/services/auth';
 import { useAppDispatch } from '@/store/store';
 import { logout as logoutAction } from '@/features/users/authSlice';
@@ -57,7 +57,7 @@ const Header = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarMenu>
           </div>
           <div className='grid flex-1 text-left text-sm leading-tight'>
             <span className='truncate font-medium text-primary'>Poddle</span>
-            <span className='truncate text-xs text-secondary'>Cloud Platform</span>
+            <span className='truncate text-xs text-muted-foreground'>Cloud Platform</span>
           </div>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -251,7 +251,7 @@ const Footer = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarMenu>
                   src={user?.picture || undefined}
                   alt={user.username}
                 />
-                <AvatarFallback className='rounded-lg'>{getUserInitials()}</AvatarFallback>
+                <AvatarFallback className='bg-primary-foreground rounded-lg'>{getUserInitials()}</AvatarFallback>
               </Avatar>
               <div className='grid flex-1 text-left text-sm leading-tight'>
                 <span className='truncate font-medium'>{user.username}</span>
@@ -264,7 +264,7 @@ const Footer = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarMenu>
             className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
             side={isMobile ? 'bottom' : 'right'}
             align='end'
-            sideOffset={4}>
+            sideOffset={16}>
             <DropdownMenuLabel className='p-0 font-normal'>
               <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
                 <Avatar className='h-8 w-8 rounded-lg'>
@@ -272,7 +272,7 @@ const Footer = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarMenu>
                     src={user.picture || undefined}
                     alt={user.username}
                   />
-                  <AvatarFallback className='rounded-lg'>CN</AvatarFallback>
+                  <AvatarFallback className='rounded-lg'>{getUserInitials()}</AvatarFallback>
                 </Avatar>
                 <div className='grid flex-1 text-left text-sm leading-tight'>
                   <span className='truncate font-medium'>{user.username}</span>
@@ -310,14 +310,14 @@ const Footer = ({ ...props }: React.ComponentPropsWithoutRef<typeof SidebarMenu>
 const AppSidebar = ({ ...props }: ComponentProps<typeof Sidebar>) => {
   return (
     <Sidebar {...props}>
-      <SidebarHeader className='bg-primary'>
+      <SidebarHeader>
         <Header />
       </SidebarHeader>
-      <SidebarContent className='bg-primary'>
+      <SidebarContent>
         <Content />
         <ContentFooter className='mt-auto' />
       </SidebarContent>
-      <SidebarFooter className='bg-primary'>
+      <SidebarFooter>
         <Footer />
       </SidebarFooter>
       <SidebarRail />
@@ -331,9 +331,8 @@ const DashboardLayout = () => {
       <AppSidebar
         variant='sidebar'
         collapsible='icon'
-        className='bg-secondary'
       />
-      <SidebarInset className='bg-secondary'>
+      <SidebarInset>
         <div className='flex-1 flex flex-col overflow-hidden'>
           <main className='flex-1 overflow-y-auto'>
             <Outlet />

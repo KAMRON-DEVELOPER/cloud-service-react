@@ -4,7 +4,7 @@ import { Container } from 'lucide-react';
 import { CreateDeploymentDialog } from './CreateDeploymentDialog';
 import { DeploymentCard } from './DeploymentCard';
 import { DashboardHeader } from './DashboardHeader';
-import { useGetDeploymentsQuery, useGetProjectQuery, useUpdateProjectMutation } from '@/services/compute';
+import { useCreateDeploymentMutation, useGetDeploymentsQuery, useGetProjectQuery, useUpdateProjectMutation } from '@/services/compute';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -22,7 +22,9 @@ const ProjectPage = () => {
 
   const { data: deployments, error: deploymentsError, isLoading: isDeploymentsLoading } = useGetDeploymentsQuery(projectId!, { skip: !projectId });
 
-  const [updateProject, { isLoading: updateProjectIsLoading }] = useUpdateProjectMutation();
+  const [updateProject, { isLoading: updateProjectIsLoading, error: updateProjectError }] = useUpdateProjectMutation();
+
+  const [createDeployment, { isLoading: createDeploymentIsLoading, error: createDeploymentError }] = useCreateDeploymentMutation();
 
   // Project name update handler
   const handleProjectNameUpdate = async (name: string) => {
@@ -48,9 +50,21 @@ const ProjectPage = () => {
     }
   };
 
-  const handleCreateDeployment = async (data: { name: string; image: string; envVars: Record<string, string>; secrets: Record<string, string> }) => {
+  const onCreateDeployment = async (data: { name: string; image: string; envVars: Record<string, string>; secrets: Record<string, string> }) => {
     console.log('Creating deployment:', data);
-    // TODO: hook to mutation for deployment creation
+
+    // export interface CreateDeploymentRequest {
+    //   projectId: string;
+    //   name: string;
+    //   image: string;
+    //   envVars?: Record<string, string>;
+    //   replicas?: number;
+    //   resources?: Partial<ResourceSpec>;
+    //   labels?: Record<string, string>;
+    //   nodeSelector?: Record<string, string>;
+    // }
+
+    await createDeployment({ projectId, data }).unwrap();
   };
 
   // Unified loading state
@@ -107,7 +121,7 @@ const ProjectPage = () => {
 
   // Normal render
   return (
-    <div className='min-h-screen bg-primary'>
+    <div className='min-h-screen'>
       <div className='group'>
         <DashboardHeader
           projectName={project.name}
@@ -118,9 +132,7 @@ const ProjectPage = () => {
 
       <main className='container mx-auto p-6 space-y-8'>
         {/* Stats section (placeholder) */}
-        <div className='grid gap-4 md:grid-cols-3'>
-          {deployments.data.length === 0 ? <p>Stats will be displayed here once you have deployments.</p> : <p>Stats available soon.</p>}
-        </div>
+        <div className='grid gap-4 md:grid-cols-3'>{deployments.data.length !== 0 && <p>Stats available soon.</p>}</div>
 
         {/* Deployments section */}
         <div className='space-y-4'>
@@ -129,7 +141,7 @@ const ProjectPage = () => {
               <h2 className='text-2xl font-bold text-primary'>Deployments</h2>
               <p className='text-sm text-muted-foreground'>Manage your containerized applications</p>
             </div>
-            <CreateDeploymentDialog onCreateDeployment={handleCreateDeployment} />
+            <CreateDeploymentDialog onCreateDeployment={onCreateDeployment} />
           </div>
 
           {deployments.data.length === 0 ? (

@@ -59,7 +59,7 @@ export const DashboardHeader = ({ projectName, onProjectNameUpdate, isUpdating =
   };
 
   return (
-    <header className='bg-primary border-b backdrop-blur-sm sticky top-0 z-10'>
+    <header className='border-b backdrop-blur-sm sticky top-0 z-10'>
       <div className='flex h-16 items-center gap-4 px-6'>
         <div className='flex items-center gap-2 flex-1'>
           {isEditing ? (

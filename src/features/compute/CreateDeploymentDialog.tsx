@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, X } from 'lucide-react';
+import { Eye, EyeOff, Plus, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 
@@ -19,6 +19,7 @@ export const CreateDeploymentDialog = ({ onCreateDeployment }: CreateDeploymentD
   const [secrets, setSecrets] = useState<Array<{ key: string; value: string }>>([]);
   const [newEnvKey, setNewEnvKey] = useState('');
   const [newEnvValue, setNewEnvValue] = useState('');
+  const [showSecret, setShowSecret] = useState(false);
   const [newSecretKey, setNewSecretKey] = useState('');
   const [newSecretValue, setNewSecretValue] = useState('');
 
@@ -81,7 +82,7 @@ export const CreateDeploymentDialog = ({ onCreateDeployment }: CreateDeploymentD
           New Deployment
         </Button>
       </DialogTrigger>
-      <DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto'>
+      <DialogContent className='max-w-2xl max-h-[90vh] overflow-y-auto w-[calc(100%-2rem)] sm:w-auto'>
         <DialogHeader>
           <DialogTitle>Create New Deployment</DialogTitle>
           <DialogDescription>Deploy a Docker image to your K3s cluster</DialogDescription>
@@ -158,7 +159,7 @@ export const CreateDeploymentDialog = ({ onCreateDeployment }: CreateDeploymentD
           {/* Secrets */}
           <div className='space-y-3'>
             <Label>Secrets</Label>
-            <div className='flex gap-2'>
+            <div className='flex gap-2 items-center'>
               <Input
                 placeholder='Key'
                 value={newSecretKey}
@@ -166,12 +167,21 @@ export const CreateDeploymentDialog = ({ onCreateDeployment }: CreateDeploymentD
                 onKeyDown={(e) => e.key === 'Enter' && handleAddSecret()}
               />
               <Input
-                type='password'
+                type={showSecret ? 'text' : 'password'}
                 placeholder='Value'
                 value={newSecretValue}
                 onChange={(e) => setNewSecretValue(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleAddSecret()}
               />
+              <Button
+                type='button'
+                variant='ghost'
+                size='icon'
+                onClick={() => setShowSecret((prev) => !prev)}
+                className='shrink-0'
+                title={showSecret ? 'Hide secret' : 'Show secret'}>
+                {showSecret ? <EyeOff className='h-4 w-4' /> : <Eye className='h-4 w-4' />}
+              </Button>
               <Button
                 onClick={handleAddSecret}
                 size='sm'
@@ -179,6 +189,7 @@ export const CreateDeploymentDialog = ({ onCreateDeployment }: CreateDeploymentD
                 <Plus className='h-4 w-4' />
               </Button>
             </div>
+
             {secrets.length > 0 && (
               <div className='flex flex-wrap gap-2 p-3 bg-muted rounded-md'>
                 {secrets.map((secret, index) => (
@@ -205,11 +216,7 @@ export const CreateDeploymentDialog = ({ onCreateDeployment }: CreateDeploymentD
             onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            className='bg-gradient-primary'>
-            Create Deployment
-          </Button>
+          <Button onClick={handleSubmit}>Create Deployment</Button>
         </div>
       </DialogContent>
     </Dialog>
