@@ -114,20 +114,20 @@ export interface Deployment {
   status: DeploymentStatus;
   clusterNamespace: string;
   clusterDeploymentName: string;
-  nodeSelector?: Record<string, string> | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface CreateDeploymentRequest {
-  projectId: string;
   name: string;
   image: string;
+  port: number;
+  subdomain?: string;
+  replicas: number;
   envVars?: Record<string, string>;
-  replicas?: number;
-  resources?: Partial<ResourceSpec>;
+  secrets?: Record<string, string>;
+  resources?: ResourceSpec;
   labels?: Record<string, string>;
-  nodeSelector?: Record<string, string>;
 }
 
 export interface UpdateDeploymentRequest {

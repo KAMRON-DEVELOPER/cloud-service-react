@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Container } from 'lucide-react';
-import { CreateDeploymentDialog } from './CreateDeploymentDialog';
 import { DeploymentCard } from './DeploymentCard';
 import { DashboardHeader } from './DashboardHeader';
 import { useCreateDeploymentMutation, useGetDeploymentsQuery, useGetProjectQuery, useUpdateProjectMutation } from '@/services/compute';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import CreateDeploymentDialog from './CreateDeploymentDialog';
+import type { CreateDeploymentRequest } from '../types';
 
 const ProjectPage = () => {
   const navigate = useNavigate();
@@ -22,9 +23,9 @@ const ProjectPage = () => {
 
   const { data: deployments, error: deploymentsError, isLoading: isDeploymentsLoading } = useGetDeploymentsQuery(projectId!, { skip: !projectId });
 
-  const [updateProject, { isLoading: updateProjectIsLoading, error: updateProjectError }] = useUpdateProjectMutation();
+  const [updateProject, { isLoading: updateProjectIsLoading }] = useUpdateProjectMutation();
 
-  const [createDeployment, { isLoading: createDeploymentIsLoading, error: createDeploymentError }] = useCreateDeploymentMutation();
+  const [createDeployment, { isLoading: createDeploymentIsLoading }] = useCreateDeploymentMutation();
 
   // Project name update handler
   const handleProjectNameUpdate = async (name: string) => {
@@ -50,21 +51,42 @@ const ProjectPage = () => {
     }
   };
 
-  const onCreateDeployment = async (data: { name: string; image: string; envVars: Record<string, string>; secrets: Record<string, string> }) => {
-    console.log('Creating deployment:', data);
+  const onCreateDeployment = async (data: CreateDeploymentRequest) => {
+    if (!projectId) {
+      toast.error('Project ID is missing');
+      return;
+    }
 
-    // export interface CreateDeploymentRequest {
-    //   projectId: string;
-    //   name: string;
-    //   image: string;
-    //   envVars?: Record<string, string>;
-    //   replicas?: number;
-    //   resources?: Partial<ResourceSpec>;
-    //   labels?: Record<string, string>;
-    //   nodeSelector?: Record<string, string>;
-    // }
+    try {
+      await createDeployment({ projectId, data }).unwrap();
+      toast.success('Deployment created successfully!');
+    } catch (err: any) {
+      console.error('Failed to create deployment:', err);
 
-    await createDeployment({ projectId, data }).unwrap();
+      // Extract detailed error message
+      let errorMessage = 'Failed to create deployment';
+
+      if (err?.data?.message) {
+        errorMessage = err.data.message;
+      } else if (err?.data?.detail) {
+        errorMessage = err.data.detail;
+      } else if (err?.data?.error) {
+        errorMessage = err.data.error;
+      } else if (err?.message) {
+        errorMessage = err.message;
+      }
+
+      // Handle validation errors
+      if (err?.status === 422 || err?.status === 400) {
+        toast.error(`Validation Error: ${errorMessage}`);
+      } else if (err?.status === 500) {
+        toast.error(`Server Error: ${errorMessage}`);
+      } else {
+        toast.error(errorMessage);
+      }
+
+      throw err;
+    }
   };
 
   // Unified loading state
