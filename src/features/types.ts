@@ -203,3 +203,28 @@ export interface DashboardStats {
   totalCost: number;
   balance: number;
 }
+
+// ------------------------------------------------
+// ------------- METRICS ----------------------------
+// ------------------------------------------------
+
+export interface PodMetrics {
+  name: string;
+  status: string;
+  ready: boolean;
+  restarts: number;
+  cpuUsage?: string | null;
+  memoryUsage?: string | null;
+  ageSeconds?: number | null;
+}
+
+export interface DeploymentMetrics {
+  deploymentId: string;
+  status: string;
+  replicas: number;
+  readyReplicas: number;
+  availableReplicas: number;
+  unavailableReplicas: number;
+  pods: PodMetrics[];
+  timestamp: number;
+}

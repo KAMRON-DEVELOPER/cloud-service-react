@@ -3,7 +3,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Container } from 'lucide-react';
 import { DeploymentCard } from './DeploymentCard';
 import { DashboardHeader } from './DashboardHeader';
-import { useCreateDeploymentMutation, useGetDeploymentsQuery, useGetProjectQuery, useUpdateProjectMutation } from '@/services/compute';
+import {
+  useCreateDeploymentMutation,
+  useDeleteProjectMutation,
+  useGetDeploymentsQuery,
+  useGetProjectQuery,
+  useUpdateProjectMutation,
+} from '@/services/compute';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import CreateDeploymentDialog from './CreateDeploymentDialog';
@@ -24,6 +30,7 @@ const ProjectPage = () => {
   const { data: deployments, error: deploymentsError, isLoading: isDeploymentsLoading } = useGetDeploymentsQuery(projectId!, { skip: !projectId });
 
   const [updateProject, { isLoading: updateProjectIsLoading }] = useUpdateProjectMutation();
+  const [deleteProject, { isLoading: deleteProjectIsLoading }] = useDeleteProjectMutation();
 
   const [createDeployment, { isLoading: createDeploymentIsLoading }] = useCreateDeploymentMutation();
 
@@ -39,6 +46,30 @@ const ProjectPage = () => {
 
       // Extract error message
       let errorMessage = 'Failed to update project name';
+      if (err?.data?.message) {
+        errorMessage = err.data.message;
+      } else if (err?.data?.detail) {
+        errorMessage = err.data.detail;
+      } else if (err?.message) {
+        errorMessage = err.message;
+      }
+
+      toast.error(errorMessage);
+    }
+  };
+
+  // Delete project handler
+  const handleDeleteProject = async () => {
+    if (!projectId) return;
+
+    try {
+      await deleteProject(projectId).unwrap();
+      toast.success('Project deleted successfully');
+    } catch (err: any) {
+      console.error('Failed to delete project:', err);
+
+      // Extract error message
+      let errorMessage = 'Failed to delete project';
       if (err?.data?.message) {
         errorMessage = err.data.message;
       } else if (err?.data?.detail) {
@@ -148,6 +179,7 @@ const ProjectPage = () => {
         <DashboardHeader
           projectName={project.name}
           onProjectNameUpdate={handleProjectNameUpdate}
+          onProjectDelete={handleDeleteProject}
           isUpdating={updateProjectIsLoading}
         />
       </div>

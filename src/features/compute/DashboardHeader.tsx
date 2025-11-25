@@ -1,16 +1,17 @@
 import { useState, useRef, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Edit2, Check, X, Loader2 } from 'lucide-react';
+import { Edit2, Check, X, Loader2, Trash } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface DashboardHeaderProps {
   projectName: string;
   onProjectNameUpdate: (name: string) => void;
+  onProjectDelete: () => void;
   isUpdating?: boolean;
 }
 
-export const DashboardHeader = ({ projectName, onProjectNameUpdate, isUpdating = false }: DashboardHeaderProps) => {
+export const DashboardHeader = ({ projectName, onProjectNameUpdate, onProjectDelete, isUpdating = false }: DashboardHeaderProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState(projectName);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +57,10 @@ export const DashboardHeader = ({ projectName, onProjectNameUpdate, isUpdating =
     } else if (e.key === 'Escape' && !isUpdating) {
       handleCancel();
     }
+  };
+
+  const handleDeleteProject = () => {
+    onProjectDelete();
   };
 
   return (
@@ -119,6 +124,14 @@ export const DashboardHeader = ({ projectName, onProjectNameUpdate, isUpdating =
               </Button>
             </>
           )}
+          <Button
+            size='sm'
+            variant='ghost'
+            onClick={handleDeleteProject}
+            disabled={isUpdating}
+            className='h-9 w-9 p-0 text-muted-foreground hover:text-destructive'>
+            <Trash className='h-4 w-4' />
+          </Button>
         </div>
       </div>
     </header>
